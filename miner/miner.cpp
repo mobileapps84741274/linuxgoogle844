@@ -74,7 +74,7 @@ miner::miner(arguments &args) : __args(args), __client(args, [&]() { return this
         }
 	}
 
-	LOG("\n");
+	LOG("");
 
     __update_pool_data();
     vector<hasher*> active_hashers = hasher::get_active_hashers();
