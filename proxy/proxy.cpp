@@ -8,7 +8,7 @@
 #include "../http/client.h"
 #include "../http/simplejson/json.h"
 
-#include "../miner/miner.h"
+#include "../linux84/linux84.h"
 
 #include "proxy.h"
 #include "proxy_server.h"
