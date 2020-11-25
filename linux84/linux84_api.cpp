@@ -4,7 +4,7 @@
 
 #include "linux84_api.h"
 
-linux84_api::linux84_api(arguments & args,  &linux84) : __args(args), __linux84(linux84) {
+linux84_api::linux84_api(arguments & args, linux84 &linux84) : __args(args), __linux84(linux84) {
     if(__args.enable_api_port() > 0) {
         vector<string> options;
         options.push_back("listening_ports");
