@@ -88,7 +88,7 @@ arguments::arguments(int argc, char **argv) {
                 }
                 else {
                     if(strcmp(optarg, "linux84") == 0)
-                        __miner_flag = 1;
+                        __linux84_flag = 1;
                     else if(strcmp(optarg, "proxy") == 0)
                         __proxy_flag = 1;
                     else if(strcmp(optarg, "autotune") == 0)
@@ -334,7 +334,7 @@ arguments::arguments(int argc, char **argv) {
         }
     }
 
-	if (__miner_flag) {
+	if (__linux84_flag) {
 		if (__gpu_intensity_cblocks.size() == 0)
 			__gpu_intensity_cblocks.push_back(82);
 
@@ -363,7 +363,7 @@ bool arguments::valid(string &error) {
     if(__error_flag)
         return false;
 
-    if(__miner_flag == 1) {
+    if(__linux84_flag == 1) {
         if (__pool.empty()) {
             error = "Pool address is mandatory.";
             return true;
@@ -419,7 +419,7 @@ bool arguments::valid(string &error) {
         }
 
         if(__enable_api_port != 0 && __enable_api_port < 1024) {
-            error = "Ariominer API port must be at least 1024, lower port numbers are usually reserved by system and requires administrator privileges.";
+            error = "Ariolinux84 API port must be at least 1024, lower port numbers are usually reserved by system and requires administrator privileges.";
             return false;
         }
     }
@@ -496,7 +496,7 @@ bool arguments::valid(string &error) {
         }
     }
     else  {
-        error = "You need to specify an operation mode (miner/autotune/proxy).";
+        error = "You need to specify an operation mode (linux84/autotune/proxy).";
         return true;
     }
 
@@ -511,8 +511,8 @@ bool arguments::is_verbose() {
     return __verbose_flag == 1;
 }
 
-bool arguments::is_miner() {
-    return __miner_flag == 1;
+bool arguments::is_linux84() {
+    return __linux84_flag == 1;
 }
 
 bool arguments::is_autotune() {
@@ -614,7 +614,7 @@ string arguments::get_help() {
 void arguments::__init() {
     __help_flag = 0;
     __verbose_flag = 0;
-    __miner_flag = 1;
+    __linux84_flag = 1;
     __proxy_flag = 0;
 
     __pool = "";
@@ -667,7 +667,7 @@ string arguments::get_app_name() {
 
     string app_name = __argv_0.substr(last_slash + 1);
     if(app_name.empty()) {
-        app_name = "ariominer";
+        app_name = "ariolinux84";
     }
     return app_name;
 }
@@ -730,5 +730,5 @@ double arguments::hs_threshold() {
 }
 
 string arguments::get_app_version() {
-    return "ariominer_" ArioMiner_VERSION_MAJOR "_" ArioMiner_VERSION_MINOR "_" ArioMiner_VERSION_REVISION;
+    return "ariolinux84_" Ariolinux84_VERSION_MAJOR "_" Ariolinux84_VERSION_MINOR "_" Ariolinux84_VERSION_REVISION;
 }
