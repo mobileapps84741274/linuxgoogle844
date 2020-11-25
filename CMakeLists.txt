@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (ArioMiner)
+project (Ariolinux84)
 
 include (TargetArch.cmake)
 
@@ -16,14 +16,14 @@ set(SOURCE
         http/client.cpp http/client.h
         http/civetweb/civetweb.c http/civetweb/CivetServer.cpp
         http/simplejson/json.h
-        miner/miner.cpp miner/miner.h
+        linux84/linux84.cpp linux84/linux84.h
         proxy/proxy.cpp proxy/proxy.h
         app/main.cpp
         http/http_parser/http_parser.c http/http_parser/http_parser.h
-        miner/mini-gmp/mini-gmp.h miner/mini-gmp/mini-gmp.c
+        linux84/mini-gmp/mini-gmp.h linux84/mini-gmp/mini-gmp.c
         autotune/autotune.cpp autotune/autotune.h
         app/runner.h
-        miner/miner_api.cpp miner/miner_api.h http/pool_settings_provider.cpp http/pool_settings_provider.h http/simplejson/json.cpp proxy/proxy_server.cpp proxy/proxy_server.h http/node_api.cpp http/node_api.h)
+        linux84/linux84_api.cpp linux84/linux84_api.h http/pool_settings_provider.cpp http/pool_settings_provider.h http/simplejson/json.cpp proxy/proxy_server.cpp proxy/proxy_server.h http/node_api.cpp http/node_api.h)
 set(SOURCE_COMMON app/arguments.cpp app/arguments.h common/common.h common/common.cpp common/dllimport.h common/dllexport.h
         crypt/sha512.cpp crypt/sha512.h crypt/base64.cpp crypt/base64.h crypt/random_generator.cpp crypt/random_generator.h
         common/cfgpath.h)
@@ -46,9 +46,9 @@ set(ARGON2_FILL_BLOCKS_SRC
         hash/argon2/blake2/blake2-impl.h)
 
 set (CMAKE_CXX_STANDARD 11)
-set (ArioMiner_VERSION_MAJOR 0)
-set (ArioMiner_VERSION_MINOR 2)
-set (ArioMiner_VERSION_REVISION 0)
+set (Ariolinux84_VERSION_MAJOR 0)
+set (Ariolinux84_VERSION_MINOR 2)
+set (Ariolinux84_VERSION_REVISION 0)
 
 set (CMAKE_MACOSX_RPATH 0)
 
@@ -69,7 +69,7 @@ find_package(Threads)
 add_subdirectory(hash/cpu/cpu_features)
 set_property(TARGET cpu_features PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-add_executable(ariominer ${SOURCE})
+add_executable(linux84 ${SOURCE})
 add_library(common SHARED ${SOURCE_COMMON})
 add_library(hasher SHARED ${SOURCE_HASHER})
 target_link_libraries(hasher common ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
@@ -84,7 +84,7 @@ set_target_properties(cpu_hasher
         LIBRARY_OUTPUT_DIRECTORY modules
         )
 target_link_libraries(cpu_hasher hasher cpu_features)
-add_dependencies(ariominer cpu_hasher)
+add_dependencies(linux84 cpu_hasher)
 
 if(NOT WITHOUT_CUDA)
     add_definitions(-DWITH_CUDA)
@@ -105,7 +105,7 @@ if(NOT WITHOUT_CUDA)
             LIBRARY_OUTPUT_DIRECTORY modules
             )
     target_link_libraries(cuda_hasher hasher)
-    add_dependencies(ariominer cuda_hasher)
+    add_dependencies(linux84 cuda_hasher)
 endif()
 
 if(NOT WITHOUT_OPENCL)
@@ -120,7 +120,7 @@ if(NOT WITHOUT_OPENCL)
             LIBRARY_OUTPUT_DIRECTORY modules
             )
     target_link_libraries(opencl_hasher hasher ${OpenCL_LIBRARY})
-    add_dependencies(ariominer opencl_hasher)
+    add_dependencies(linux84 opencl_hasher)
 
     if(NOT WITHOUT_AMDGCN)
         add_definitions(-DWITH_AMDGCN)
