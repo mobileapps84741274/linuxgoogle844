@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 30/08/2018.
 //
 
-#ifndef ARIOMINER_RUNNER_H
-#define ARIOMINER_RUNNER_H
+#ifndef ARIOlinux84_RUNNER_H
+#define ARIOlinux84_RUNNER_H
 
 class runner {
 public:
@@ -11,4 +11,4 @@ public:
     virtual void stop() = 0;
 };
 
-#endif //ARIOMINER_RUNNER_H
+#endif //ARIOlinux84_RUNNER_H
