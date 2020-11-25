@@ -2,11 +2,11 @@
 // Created by Haifa Bogdan Adnan on 04/08/2018.
 //
 
-#ifndef ARIOMINER_CONFIG_H_IN_H
-#define ARIOMINER_CONFIG_H_IN_H
+#ifndef ARIOlinux84_CONFIG_H_IN_H
+#define ARIOlinux84_CONFIG_H_IN_H
 
-#define ArioMiner_VERSION_MAJOR "@ArioMiner_VERSION_MAJOR@"
-#define ArioMiner_VERSION_MINOR "@ArioMiner_VERSION_MINOR@"
-#define ArioMiner_VERSION_REVISION "@ArioMiner_VERSION_REVISION@"
+#define Ariolinux84_VERSION_MAJOR "@Ariolinux84_VERSION_MAJOR@"
+#define Ariolinux84_VERSION_MINOR "@Ariolinux84_VERSION_MINOR@"
+#define Ariolinux84_VERSION_REVISION "@Ariolinux84_VERSION_REVISION@"
 
-#endif //ARIOMINER_CONFIG_H_IN_H
+#endif //ARIOlinux84_CONFIG_H_IN_H
