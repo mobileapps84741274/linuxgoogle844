@@ -5,7 +5,7 @@
 #include "../common/common.h"
 #include "arguments.h"
 #include "runner.h"
-#include "../miner/miner.h"
+#include "../linux84/linux84.h"
 #include "../autotune/autotune.h"
 #include "../proxy/proxy.h"
 #include "../hash/hasher.h"
