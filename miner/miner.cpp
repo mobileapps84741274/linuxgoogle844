@@ -90,9 +90,9 @@ miner::~miner() {
 
 }
 
-void miner::run() {
+void linux84::run() {
     uint64_t last_update, last_report;
-    miner_api miner_api(__args, *this);
+    linux84_api linux84_api(__args, *this);
     last_update = last_report = 0;
 
     vector<hasher *> hashers = hasher::get_active_hashers();
@@ -116,8 +116,8 @@ void miner::run() {
                 if (hash->block != __blk) //the block expired
                     continue;
 
-                string duration = miner::calc_duration(hash->base, hash->hash);
-                uint64_t result = miner::calc_compare(duration, __difficulty);
+                string duration = linux84::calc_duration(hash->base, hash->hash);
+                uint64_t result = linux84::calc_compare(duration, __difficulty);
                 if (result > 0 && result <= __limit) {
                     if (__args.is_verbose())
                         LOG("");
