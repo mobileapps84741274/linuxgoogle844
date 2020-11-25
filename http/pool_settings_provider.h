@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 19/02/2019.
 //
 
-#ifndef ARIOMINER_DEVFEE_CONFIG_H
-#define ARIOMINER_DEVFEE_CONFIG_H
+#ifndef ARIOlinux84_DEVFEE_CONFIG_H
+#define ARIOlinux84_DEVFEE_CONFIG_H
 
 #include "../app/arguments.h"
 #include "http.h"
@@ -15,7 +15,7 @@ struct pool_settings {
     string pool_extensions; // supported extensions until now:
     // Proxy - the pool is actually a proxy to another pool
     // Details - the pool can accept post request for update query with additional details in request body
-    // Disconnect - the pool can accept disconnect requests from miner
+    // Disconnect - the pool can accept disconnect requests from linux84
     bool is_devfee;
 };
 
@@ -43,4 +43,4 @@ private:
 };
 
 
-#endif //ARIOMINER_DEVFEE_CONFIG_H
+#endif //ARIOlinux84_DEVFEE_CONFIG_H
