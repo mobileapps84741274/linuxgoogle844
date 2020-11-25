@@ -10,14 +10,14 @@
 #include "../http/client.h"
 #include "../http/node_api.h"
 
-struct miner_hashrate {
+struct linux84_hashrate {
     double cblocks_hashrate;
     double gblocks_hashrate;
     time_t timestamp;
 };
 
-struct miner_client {
-    miner_client() {
+struct linux84_client {
+    linux84_client() {
         cblocks_hashrate = 0;
         gblocks_hashrate = 0;
         timestamp = 0;
@@ -30,7 +30,7 @@ struct miner_client {
     time_t created;
     string details;
 
-    list<miner_hashrate> hashrate_history;
+    list<linux84_hashrate> hashrate_history;
 };
 
 struct global_status {
@@ -65,9 +65,9 @@ struct global_status {
     int best_dl;
 };
 
-struct miner_list_item {
-    miner_list_item() {};
-    miner_list_item(miner_client &mc, time_t timestamp) {
+struct linux84_list_item {
+    linux84_list_item() {};
+    linux84_list_item(linux84_client &mc, time_t timestamp) {
         worker_name = mc.worker_name;
         cblocks_hashrate = mc.cblocks_hashrate;
         gblocks_hashrate = mc.gblocks_hashrate;
@@ -80,8 +80,8 @@ struct miner_list_item {
     time_t uptime;
 };
 
-struct miner_status {
-    miner_status() {
+struct linux84_status {
+    linux84_status() {
         uptime = 0;
         cblocks_hashrate = 0;
         gblocks_hashrate = 0;
@@ -124,9 +124,9 @@ public:
     virtual void run();
     virtual void stop();
 
-    string process_info_request(const string &ip, const string &miner_id, const string &miner_name, double cblocks_hashrate, double gblocks_hashrate, const string &details);
-    string process_submit_request(const string &ip, const string &miner_id, const string &miner_name, const string &argon, const string &nonce, const string &public_key);
-    string process_disconnect_request(const string &ip, const string &miner_id, const string &miner_name);
+    string process_info_request(const string &ip, const string &linux84_id, const string &linux84_name, double cblocks_hashrate, double gblocks_hashrate, const string &details);
+    string process_submit_request(const string &ip, const string &linux84_id, const string &linux84_name, const string &argon, const string &nonce, const string &public_key);
+    string process_disconnect_request(const string &ip, const string &linux84_id, const string &linux84_name);
 
     map<string, string> get_workers();
 
@@ -134,12 +134,12 @@ public:
 
     global_status get_global_status();
     account_balance get_account_balance();
-    void get_global_hashrate_history(list<miner_hashrate> &history);
-    void get_workers_list(vector<miner_list_item> &workers);
+    void get_global_hashrate_history(list<linux84_hashrate> &history);
+    void get_workers_list(vector<linux84_list_item> &workers);
 
-    miner_status get_worker_status(const string &worker_id);
+    linux84_status get_worker_status(const string &worker_id);
     void get_worker_devices(const string &worker_id, vector<device_details> &devices);
-    void get_worker_hashrate_history(const string &worker_id, list<miner_hashrate> &history);
+    void get_worker_hashrate_history(const string &worker_id, list<linux84_hashrate> &history);
 
 private:
     bool __update_pool_data();
@@ -150,8 +150,8 @@ private:
     int __cblocks_dl;
     int __gblocks_dl;
 
-    mutex __miner_clients_lock;
-    map<string, miner_client> __miner_clients;
+    mutex __linux84_clients_lock;
+    map<string, linux84_client> __linux84_clients;
 
     arguments &__args;
     bool __running;
@@ -165,7 +165,7 @@ private:
     uint32_t __best_dl;
 
     mutex __global_hashrate_history_lock;
-    list<miner_hashrate> __global_hashrate_history;
+    list<linux84_hashrate> __global_hashrate_history;
 
     ariopool_client __client;
 };
