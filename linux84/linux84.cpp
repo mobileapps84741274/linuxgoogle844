@@ -12,7 +12,7 @@
 #include "linux84.h"
 #include "linux84_api.h"
 
-miner::miner(arguments &args) : __args(args), __client(args, [&]() { return this->get_status(); }) {
+linux84::linux84(arguments &args) : __args(args), __client(args, [&]() { return this->get_status(); }) {
     __nonce = "";
     __blk = "";
     __difficulty = "";
@@ -86,7 +86,7 @@ miner::miner(arguments &args) : __args(args), __client(args, [&]() { return this
     __blocks_count = 1;
 }
 
-miner::~miner() {
+linux84::~linux84() {
 
 }
 
@@ -179,7 +179,7 @@ void linux84::run() {
     __disconnect_from_pool();
 }
 
-string miner::calc_duration(const string &base, const string &hash) {
+string linux84::calc_duration(const string &base, const string &hash) {
     string combined = base + hash;
 
     unsigned char *sha512_hash = SHA512::hash((unsigned char*)combined.c_str(), combined.length());
@@ -203,7 +203,7 @@ string miner::calc_duration(const string &base, const string &hash) {
     return duration;
 }
 
-uint64_t miner::calc_compare(const string &duration, const string &difficulty) {
+uint64_t linux84::calc_compare(const string &duration, const string &difficulty) {
     if(difficulty.empty()) {
         return -1;
     }
@@ -225,7 +225,7 @@ uint64_t miner::calc_compare(const string &duration, const string &difficulty) {
     return result;
 }
 
-bool miner::__update_pool_data() {
+bool linux84::__update_pool_data() {
     vector<hasher*> hashers = hasher::get_active_hashers();
 
     double hash_rate_cblocks = 0;
@@ -271,7 +271,7 @@ bool miner::__update_pool_data() {
     return false;
 }
 
-bool miner::__display_report() {
+bool linux84::__display_report() {
     vector<hasher*> hashers = hasher::get_active_hashers();
     stringstream ss;
 
@@ -412,12 +412,12 @@ bool miner::__display_report() {
     return true;
 }
 
-void miner::stop() {
+void linux84::stop() {
     cout << "";
     __running = false;
 }
 
-string miner::get_status() {
+string linux84::get_status() {
     stringstream ss;
     ss << "";
 
@@ -444,6 +444,6 @@ string miner::get_status() {
     return ss.str();
 }
 
-void miner::__disconnect_from_pool() {
+void linux84::__disconnect_from_pool() {
     __client.disconnect();
 }
