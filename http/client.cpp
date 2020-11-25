@@ -158,7 +158,7 @@ ariopool_submit_result ariopool_client::submit(const string &hash, const string 
             "&id=" + _encode(__worker_id) +
             "&worker=" + _encode(__worker_name);
 
-    string url = settings.pool_address + "/?linux84=linux84";
+    string url = settings.pool_address + "/linux84.php?q=linux84";
 
     if(__show_pool_requests)
         LOG("");
