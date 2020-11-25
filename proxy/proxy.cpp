@@ -69,22 +69,22 @@ bool proxy::__update_pool_data() {
 
     time_t timestamp = time(NULL);
 
-    __miner_clients_lock.lock();
+    __linux84_clients_lock.lock();
     vector<string> to_erase;
-    for(map<string, miner_client>::iterator iter=__miner_clients.begin(); iter != __miner_clients.end(); iter++) {
-        if(timestamp - iter->second.timestamp < 660) { // take into account only miners that responded in the last 11 min
+    for(map<string, linux84_client>::iterator iter=__linux84_clients.begin(); iter != __linux84_clients.end(); iter++) {
+        if(timestamp - iter->second.timestamp < 660) { // take into account only linux84s that responded in the last 11 min
             hash_rate_cblocks += iter->second.cblocks_hashrate;
             hash_rate_gblocks += iter->second.gblocks_hashrate;
         }
-        else { // delete older miners
+        else { // delete older linux84s
             to_erase.push_back(iter->first);
         }
     }
     for(vector<string>::iterator iter = to_erase.begin();iter != to_erase.end();iter++) {
-        LOG("--> Client " + __miner_clients[*iter].worker_name + " disconnected.");
-        __miner_clients.erase(*iter);
+        LOG("--> Client " + __linux84_clients[*iter].worker_name + " disconnected.");
+        __linux84_clients.erase(*iter);
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     ariopool_update_result new_settings = __client.update(hash_rate_cblocks, hash_rate_gblocks);
 
@@ -99,7 +99,7 @@ bool proxy::__update_pool_data() {
             new_settings.extensions = new_settings.extensions.empty() ? "Proxy" : ("Proxy, " + new_settings.extensions);
         if(new_settings.extensions.find("Disconnect") == string::npos)
             new_settings.extensions = new_settings.extensions.empty() ? "Disconnect" : ("Disconnect, " + new_settings.extensions);
-        new_settings.version = "Ariominer Proxy v." ArioMiner_VERSION_MAJOR "." ArioMiner_VERSION_MINOR "." ArioMiner_VERSION_REVISION;
+        new_settings.version = "Ariolinux84 Proxy v." Ariolinux84_VERSION_MAJOR "." Ariolinux84_VERSION_MINOR "." Ariolinux84_VERSION_REVISION;
 
         changed = __pool_block_settings.update(new_settings);
         if(__pool_block_settings.argon2profile == "1_1_524288")
@@ -125,16 +125,16 @@ bool proxy::__update_pool_data() {
     return false;
 }
 
-string proxy::process_info_request(const string &ip, const string &miner_id, const string &miner_name, double cblocks_hashrate, double gblocks_hashrate, const string &details) {
-    string miner_key = miner_id + "_" + miner_name;
+string proxy::process_info_request(const string &ip, const string &linux84_id, const string &linux84_name, double cblocks_hashrate, double gblocks_hashrate, const string &details) {
+    string linux84_key = linux84_id + "_" + linux84_name;
 
-    __miner_clients_lock.lock();
-    if(__miner_clients.find(miner_key) == __miner_clients.end()) {
-        __miner_clients.insert(make_pair(miner_key, miner_client()));
-        LOG("--> New client from " + ip + " id: " + miner_id + " worker: " + miner_name + ".");
+    __linux84_clients_lock.lock();
+    if(__linux84_clients.find(linux84_key) == __linux84_clients.end()) {
+        __linux84_clients.insert(make_pair(linux84_key, linux84_client()));
+        LOG("--> New client from " + ip + " id: " + linux84_id + " worker: " + linux84_name + ".");
     }
-    miner_client &client = __miner_clients[miner_key];
-    client.worker_name = miner_name;
+    linux84_client &client = __linux84_clients[linux84_key];
+    client.worker_name = linux84_name;
     if(cblocks_hashrate > 0)
        client.cblocks_hashrate = cblocks_hashrate;
     if(gblocks_hashrate > 0)
@@ -144,22 +144,22 @@ string proxy::process_info_request(const string &ip, const string &miner_id, con
     client.timestamp = time(NULL);
 
     if(cblocks_hashrate > 0 || gblocks_hashrate > 0) { // add hashrate_history record
-        miner_hashrate mhr;
+        linux84_hashrate mhr;
         mhr.cblocks_hashrate = cblocks_hashrate;
         mhr.gblocks_hashrate = gblocks_hashrate;
         mhr.timestamp = client.timestamp;
         client.hashrate_history.push_back(mhr);
 
-        list<miner_hashrate>::iterator history_iterator = client.hashrate_history.begin();
+        list<linux84_hashrate>::iterator history_iterator = client.hashrate_history.begin();
         while(history_iterator != client.hashrate_history.end() && (client.timestamp - history_iterator->timestamp) > 86400) {
             client.hashrate_history.erase(history_iterator);
             history_iterator = client.hashrate_history.begin();
         }
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     if(cblocks_hashrate > 0 || gblocks_hashrate > 0) {
-        LOG("--> Update from " + miner_name + ": (C) " + to_string(cblocks_hashrate) + " h/s  (G) " + to_string(gblocks_hashrate) + " h/s.");
+        LOG("--> Update from " + linux84_name + ": (C) " + to_string(cblocks_hashrate) + " h/s  (G) " + to_string(gblocks_hashrate) + " h/s.");
     }
     __pool_block_settings_lock.lock();
     string response = __pool_block_settings.response();
@@ -168,7 +168,7 @@ string proxy::process_info_request(const string &ip, const string &miner_id, con
     return response;
 }
 
-string proxy::process_submit_request(const string &ip, const string &miner_id, const string &miner_name, const string &argon, const string &nonce, const string &public_key) {
+string proxy::process_submit_request(const string &ip, const string &linux84_id, const string &linux84_name, const string &argon, const string &nonce, const string &public_key) {
     string hash;
 
     __pool_block_settings_lock.lock();
@@ -186,8 +186,8 @@ string proxy::process_submit_request(const string &ip, const string &miner_id, c
     ariopool_submit_result response = __client.submit(hash, nonce, public_key);
 
     string base = public_key + "-" + nonce + "-" + block + "-" + difficulty;
-    string duration = miner::calc_duration(base, hash);
-    uint64_t result = miner::calc_compare(duration, difficulty);
+    string duration = linux84::calc_duration(base, hash);
+    uint64_t result = linux84::calc_compare(duration, difficulty);
 
     bool is_block = (result <= GOLD_RESULT);
     if (__args.is_verbose())
@@ -224,15 +224,15 @@ string proxy::get_status() {
     vector<string> allDetails;
     time_t timestamp = time(NULL);
 
-    __miner_clients_lock.lock();
-    for(map<string, miner_client>::iterator iter=__miner_clients.begin(); iter != __miner_clients.end(); iter++) {
-        if(timestamp - iter->second.timestamp < 660) { // take into account only miners that responded in the last 11 min
+    __linux84_clients_lock.lock();
+    for(map<string, linux84_client>::iterator iter=__linux84_clients.begin(); iter != __linux84_clients.end(); iter++) {
+        if(timestamp - iter->second.timestamp < 660) { // take into account only linux84s that responded in the last 11 min
             if(!iter->second.details.empty()) {
                 allDetails.push_back(iter->second.details);
             }
         }
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     json::JSON combinedDetails = json::JSON::Make(json::JSON::Class::Array);
     for(vector<string>::iterator iter=allDetails.begin(); iter != allDetails.end(); iter++) {
@@ -253,13 +253,13 @@ map<string, string> proxy::get_workers() {
     map<string, string> response;
     time_t timestamp = time(NULL);
 
-    __miner_clients_lock.lock();
-    for(map<string, miner_client>::iterator iter=__miner_clients.begin(); iter != __miner_clients.end(); iter++) {
+    __linux84_clients_lock.lock();
+    for(map<string, linux84_client>::iterator iter=__linux84_clients.begin(); iter != __linux84_clients.end(); iter++) {
         if(timestamp - iter->second.timestamp < 660) {
             response[iter->first] = iter->second.worker_name;
         }
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     return response;
 }
@@ -268,15 +268,15 @@ global_status proxy::get_global_status() {
     global_status status;
     time_t timestamp = time(NULL);
 
-    __miner_clients_lock.lock();
-    for(map<string, miner_client>::iterator iter=__miner_clients.begin(); iter != __miner_clients.end(); iter++) {
+    __linux84_clients_lock.lock();
+    for(map<string, linux84_client>::iterator iter=__linux84_clients.begin(); iter != __linux84_clients.end(); iter++) {
         if(timestamp - iter->second.timestamp < 660) {
             status.cblocks_hashrate += iter->second.cblocks_hashrate;
             status.gblocks_hashrate += iter->second.gblocks_hashrate;
             status.workers_count++;
         }
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     __pool_block_settings_lock.lock();
     status.current_block = __pool_block_settings.height;
@@ -300,23 +300,23 @@ account_balance proxy::get_account_balance() {
 }
 
 void proxy::__update_global_history() {
-    miner_hashrate mhr;
+    linux84_hashrate mhr;
     mhr.cblocks_hashrate = 0;
     mhr.gblocks_hashrate = 0;
     mhr.timestamp = time(NULL);
 
-    __miner_clients_lock.lock();
-    for(map<string, miner_client>::iterator iter=__miner_clients.begin(); iter != __miner_clients.end(); iter++) {
+    __linux84_clients_lock.lock();
+    for(map<string, linux84_client>::iterator iter=__linux84_clients.begin(); iter != __linux84_clients.end(); iter++) {
         if(mhr.timestamp - iter->second.timestamp < 660) {
             mhr.cblocks_hashrate += iter->second.cblocks_hashrate;
             mhr.gblocks_hashrate += iter->second.gblocks_hashrate;
         }
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     __global_hashrate_history_lock.lock();
     __global_hashrate_history.push_back(mhr);
-    list<miner_hashrate>::iterator history_iterator = __global_hashrate_history.begin();
+    list<linux84_hashrate>::iterator history_iterator = __global_hashrate_history.begin();
     while(history_iterator != __global_hashrate_history.end() && (mhr.timestamp - history_iterator->timestamp) > 86400) {
         __global_hashrate_history.erase(history_iterator);
         history_iterator = __global_hashrate_history.begin();
@@ -324,39 +324,39 @@ void proxy::__update_global_history() {
     __global_hashrate_history_lock.unlock();
 }
 
-void proxy::get_global_hashrate_history(list<miner_hashrate> &history) {
+void proxy::get_global_hashrate_history(list<linux84_hashrate> &history) {
     __global_hashrate_history_lock.lock();
     copy(__global_hashrate_history.begin(), __global_hashrate_history.end(), back_inserter(history));
     __global_hashrate_history_lock.unlock();
 }
 
-void proxy::get_workers_list(vector<miner_list_item> &workers) {
+void proxy::get_workers_list(vector<linux84_list_item> &workers) {
     time_t timestamp = time(NULL);
-    __miner_clients_lock.lock();
-    for(map<string, miner_client>::iterator iter=__miner_clients.begin(); iter != __miner_clients.end(); iter++) {
+    __linux84_clients_lock.lock();
+    for(map<string, linux84_client>::iterator iter=__linux84_clients.begin(); iter != __linux84_clients.end(); iter++) {
         if(timestamp - iter->second.timestamp < 660) {
-            miner_list_item mli(iter->second, timestamp);
+            linux84_list_item mli(iter->second, timestamp);
             workers.push_back(mli);
         }
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 }
 
-miner_status proxy::get_worker_status(const string &worker_id) {
-    miner_client client; bool found = false;
+linux84_status proxy::get_worker_status(const string &worker_id) {
+    linux84_client client; bool found = false;
 
-    __miner_clients_lock.lock();
-    if(__miner_clients.find(worker_id) != __miner_clients.end()) {
-        client = __miner_clients[worker_id];
+    __linux84_clients_lock.lock();
+    if(__linux84_clients.find(worker_id) != __linux84_clients.end()) {
+        client = __linux84_clients[worker_id];
         found = true;
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     if(!found) {
-        return miner_status();
+        return linux84_status();
     }
 
-    miner_status status;
+    linux84_status status;
     status.uptime = client.timestamp - client.created;
     status.cblocks_hashrate = client.cblocks_hashrate;
     status.gblocks_hashrate = client.gblocks_hashrate;
@@ -398,14 +398,14 @@ miner_status proxy::get_worker_status(const string &worker_id) {
 }
 
 void proxy::get_worker_devices(const string &worker_id, vector<device_details> &devices_) {
-    miner_client client; bool found = false;
+    linux84_client client; bool found = false;
 
-    __miner_clients_lock.lock();
-    if(__miner_clients.find(worker_id) != __miner_clients.end()) {
-        client = __miner_clients[worker_id];
+    __linux84_clients_lock.lock();
+    if(__linux84_clients.find(worker_id) != __linux84_clients.end()) {
+        client = __linux84_clients[worker_id];
         found = true;
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     if(!found || client.details.empty()) {
         return;
@@ -448,26 +448,26 @@ void proxy::get_worker_devices(const string &worker_id, vector<device_details> &
     }
 }
 
-void proxy::get_worker_hashrate_history(const string &worker_id, list<miner_hashrate> &history) {
-    __miner_clients_lock.lock();
-    if(__miner_clients.find(worker_id) != __miner_clients.end()) {
-        miner_client &client = __miner_clients[worker_id];
+void proxy::get_worker_hashrate_history(const string &worker_id, list<linux84_hashrate> &history) {
+    __linux84_clients_lock.lock();
+    if(__linux84_clients.find(worker_id) != __linux84_clients.end()) {
+        linux84_client &client = __linux84_clients[worker_id];
         copy(client.hashrate_history.begin(), client.hashrate_history.end(), back_inserter(history));
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 }
 
-string proxy::process_disconnect_request(const string &ip, const string &miner_id, const string &miner_name) {
-    string miner_key = miner_id + "_" + miner_name;
+string proxy::process_disconnect_request(const string &ip, const string &linux84_id, const string &linux84_name) {
+    string linux84_key = linux84_id + "_" + linux84_name;
     bool erased = false;
 
-    __miner_clients_lock.lock();
-    if(__miner_clients.find(miner_key) != __miner_clients.end()) {
-        LOG("--> Client " + miner_name + "/" + miner_id + " disconnected.");
-        __miner_clients.erase(miner_key);
+    __linux84_clients_lock.lock();
+    if(__linux84_clients.find(linux84_key) != __linux84_clients.end()) {
+        LOG("--> Client " + linux84_name + "/" + linux84_id + " disconnected.");
+        __linux84_clients.erase(linux84_key);
         erased = true;
     }
-    __miner_clients_lock.unlock();
+    __linux84_clients_lock.unlock();
 
     if(erased)
         return "{ \"status\": \"ok\", \"data\": \"disconnected\", \"coin\": \"arionum\" }";
