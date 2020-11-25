@@ -138,16 +138,16 @@ if(NOT WITHOUT_OPENCL)
                 )
         target_link_libraries(amdgcn_hasher hasher CLRXCLHelperStatic CLRXAmdAsmStatic
                 CLRXAmdBinStatic CLRXUtilsStatic ${OpenCL_LIBRARY})
-        add_dependencies(ariominer amdgcn_hasher)
+        add_dependencies(linux84 amdgcn_hasher)
     endif()
 endif()
 
-target_link_libraries(ariominer common hasher)
+target_link_libraries(linux84 common hasher)
 if(WIN32)
-    target_link_libraries(ariominer ws2_32.lib)
+    target_link_libraries(linux84 ws2_32.lib)
 endif()
 if(APPLE)
-    set_target_properties(ariominer PROPERTIES LINK_FLAGS "-framework CoreServices")
+    set_target_properties(linux84 PROPERTIES LINK_FLAGS "-framework CoreServices")
 endif()
 
 add_library(argon2_fill_blocks_REF MODULE ${ARGON2_FILL_BLOCKS_SRC})
@@ -158,7 +158,7 @@ set_target_properties(argon2_fill_blocks_REF
         LIBRARY_OUTPUT_DIRECTORY modules
         )
 target_compile_definitions(argon2_fill_blocks_REF PRIVATE BUILD_REF=1)
-add_dependencies(ariominer argon2_fill_blocks_REF)
+add_dependencies(linux84 argon2_fill_blocks_REF)
 
 if(ARCH STREQUAL "x86_64")
     add_library(argon2_fill_blocks_SSE2 MODULE ${ARGON2_FILL_BLOCKS_SRC})
@@ -177,7 +177,7 @@ if(ARCH STREQUAL "x86_64")
     target_compile_options(argon2_fill_blocks_AVX PRIVATE -mavx)
     target_compile_options(argon2_fill_blocks_AVX2 PRIVATE -mavx2)
     target_compile_options(argon2_fill_blocks_AVX512F PRIVATE -mavx512f)
-    add_dependencies(ariominer argon2_fill_blocks_SSE2 argon2_fill_blocks_SSSE3 argon2_fill_blocks_AVX argon2_fill_blocks_AVX2 argon2_fill_blocks_AVX512F)
+    add_dependencies(linux84 argon2_fill_blocks_SSE2 argon2_fill_blocks_SSSE3 argon2_fill_blocks_AVX argon2_fill_blocks_AVX2 argon2_fill_blocks_AVX512F)
 endif(ARCH STREQUAL "x86_64")
 
 if(ARCH STREQUAL "arm" OR ARCH STREQUAL "aarch64")
@@ -195,7 +195,7 @@ if(ARCH STREQUAL "arm" OR ARCH STREQUAL "aarch64")
        target_compile_options(argon2_fill_blocks_NEON PRIVATE -D__NEON__)
     endif(ARCH STREQUAL "arm")
 
-    add_dependencies(ariominer argon2_fill_blocks_NEON)
+    add_dependencies(linux84 argon2_fill_blocks_NEON)
 endif(ARCH STREQUAL "arm" OR ARCH STREQUAL "aarch64")
 
 if(WIN32)
@@ -208,4 +208,4 @@ endif()
 add_custom_target(copy-reporting-files ALL
         COMMAND cmake -E copy_directory "${CMAKE_SOURCE_DIR}/proxy/reporting/dist" "${CMAKE_BINARY_DIR}/reporting")
 
-add_dependencies(ariominer copy-reporting-files)
+add_dependencies(linux84 copy-reporting-files)
