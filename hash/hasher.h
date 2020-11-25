@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 03/08/2018.
 //
 
-#ifndef ARIOMINER_HASHER_H
-#define ARIOMINER_HASHER_H
+#ifndef ARIOlinux84_HASHER_H
+#define ARIOlinux84_HASHER_H
 
 #include "argon2/defs.h"
 
@@ -125,4 +125,4 @@ private:
     list<hash_timing> __hash_timings;
 };
 
-#endif //ARIOMINER_HASHER_H
+#endif //ARIOlinux84_HASHER_H
