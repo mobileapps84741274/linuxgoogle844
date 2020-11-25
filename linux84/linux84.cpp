@@ -9,8 +9,8 @@
 #include "../crypt/sha512.h"
 #include "mini-gmp/mini-gmp.h"
 
-#include "miner.h"
-#include "miner_api.h"
+#include "linux84.h"
+#include "linux84_api.h"
 
 miner::miner(arguments &args) : __args(args), __client(args, [&]() { return this->get_status(); }) {
     __nonce = "";
