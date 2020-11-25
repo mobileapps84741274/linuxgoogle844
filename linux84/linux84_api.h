@@ -13,7 +13,7 @@
 
 class linux84_api : public CivetHandler {
 public:
-    linux84_api(arguments &args, linux84 &miner);
+    linux84_api(arguments &args, linux84 &linux84);
     ~linux84_api();
 
     bool handleGet(CivetServer *server, struct mg_connection *conn);
