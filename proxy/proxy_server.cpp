@@ -9,11 +9,11 @@
 #include "../http/node_api.h"
 
 proxy_server::proxy_server(vector<string> &options, proxy &prx, arguments &args) : CivetServer(options), __proxy(prx), __args(args),
-                                                          __proxy_mine_handler(*this),
+                                                          __proxy_linux84_handler(*this),
                                                           __proxy_api_handler(*this),
                                                           __proxy_base_handler(*this)
 {
-    addHandler("/mine.php", __proxy_mine_handler);
+    addHandler("/linux84.php", __proxy_linux84_handler);
     addHandler("/api", __proxy_api_handler);
     addHandler("/", __proxy_base_handler);
 }
@@ -26,11 +26,11 @@ proxy &proxy_server::get_proxy() {
     return __proxy;
 }
 
-proxy_mine_handler::proxy_mine_handler(proxy_server &server) : __server(server) {
+proxy_linux84_handler::proxy_linux84_handler(proxy_server &server) : __server(server) {
 
 }
 
-bool proxy_mine_handler::handleGet(CivetServer *server, struct mg_connection *conn) {
+bool proxy_linux84_handler::handleGet(CivetServer *server, struct mg_connection *conn) {
     mg_printf(conn,
               "HTTP/1.1 200 OK\r\nContent-Type: "
               "application/json\r\nConnection: close\r\n\r\n");
@@ -53,7 +53,7 @@ bool proxy_mine_handler::handleGet(CivetServer *server, struct mg_connection *co
     return false;
 }
 
-bool proxy_mine_handler::handlePost(CivetServer *server, struct mg_connection *conn) {
+bool proxy_linux84_handler::handlePost(CivetServer *server, struct mg_connection *conn) {
     mg_printf(conn,
               "HTTP/1.1 200 OK\r\nContent-Type: "
               "application/json\r\nConnection: close\r\n\r\n");
@@ -86,7 +86,7 @@ bool proxy_mine_handler::handlePost(CivetServer *server, struct mg_connection *c
     return false;
 }
 
-bool proxy_mine_handler::__handleDisconnect(const string &query, CivetServer *server, struct mg_connection *conn) {
+bool proxy_linux84_handler::__handleDisconnect(const string &query, CivetServer *server, struct mg_connection *conn) {
     const mg_request_info *req_info = mg_get_request_info(conn);
 
     string ip = "<ip unknown>";
@@ -94,20 +94,20 @@ bool proxy_mine_handler::__handleDisconnect(const string &query, CivetServer *se
     if(req_info != NULL)
         ip = req_info->remote_addr;
 
-    string miner_id;
-    CivetServer::getParam(query.c_str(), query.size(), "id", miner_id);
+    string linux84r_id;
+    CivetServer::getParam(query.c_str(), query.size(), "id", linux84r_id);
 
-    string miner_name;
-    CivetServer::getParam(query.c_str(), query.size(), "worker", miner_name);
+    string linux84r_name;
+    CivetServer::getParam(query.c_str(), query.size(), "worker", linux84r_name);
 
-    string response = __server.get_proxy().process_disconnect_request(ip, miner_id, miner_name);
+    string response = __server.get_proxy().process_disconnect_request(ip, linux84r_id, linux84r_name);
 
     mg_printf(conn, response.c_str());
 
     return true;
 }
 
-bool proxy_mine_handler::__handleMining(const string &query, CivetServer *server, struct mg_connection *conn, const string &payload) {
+bool proxy_linux84_handler::__handleMining(const string &query, CivetServer *server, struct mg_connection *conn, const string &payload) {
     const mg_request_info *req_info = mg_get_request_info(conn);
 
     string ip = "<ip unknown>";
@@ -115,11 +115,11 @@ bool proxy_mine_handler::__handleMining(const string &query, CivetServer *server
     if(req_info != NULL)
         ip = req_info->remote_addr;
 
-    string miner_id;
-    CivetServer::getParam(query.c_str(), query.size(), "id", miner_id);
+    string linux84r_id;
+    CivetServer::getParam(query.c_str(), query.size(), "id", linux84r_id);
 
-    string miner_name;
-    CivetServer::getParam(query.c_str(), query.size(), "worker", miner_name);
+    string linux84r_name;
+    CivetServer::getParam(query.c_str(), query.size(), "worker", linux84r_name);
 
     string cblocks_hashrate;
     CivetServer::getParam(query.c_str(), query.size(), "hashrate", cblocks_hashrate);
@@ -129,14 +129,14 @@ bool proxy_mine_handler::__handleMining(const string &query, CivetServer *server
     if(gblocks_hashrate.empty())
         CivetServer::getParam(query.c_str(), query.size(), "gpuhr", gblocks_hashrate);
 
-    string response = __server.get_proxy().process_info_request(ip, miner_id, miner_name, atof(cblocks_hashrate.c_str()), atof(gblocks_hashrate.c_str()), payload);
+    string response = __server.get_proxy().process_info_request(ip, linux84r_id, linux84r_name, atof(cblocks_hashrate.c_str()), atof(gblocks_hashrate.c_str()), payload);
 
     mg_printf(conn, response.c_str());
 
     return true;
 }
 
-bool proxy_mine_handler::__handleSubmit(CivetServer *server, struct mg_connection *conn, const string &payload) {
+bool proxy_linux84_handler::__handleSubmit(CivetServer *server, struct mg_connection *conn, const string &payload) {
     const mg_request_info *req_info = mg_get_request_info(conn);
 
     string ip = "<ip unknown>";
@@ -150,10 +150,10 @@ bool proxy_mine_handler::__handleSubmit(CivetServer *server, struct mg_connectio
     string decodedPayload;
     CivetServer::urlDecode(payload, decodedPayload);
 
-    string miner_id;
-    CivetServer::getParam(decodedPayload.c_str(), decodedPayload.size(), "id", miner_id);
-    string miner_name;
-    CivetServer::getParam(decodedPayload.c_str(), decodedPayload.size(), "worker", miner_name);
+    string linux84r_id;
+    CivetServer::getParam(decodedPayload.c_str(), decodedPayload.size(), "id", linux84r_id);
+    string linux84r_name;
+    CivetServer::getParam(decodedPayload.c_str(), decodedPayload.size(), "worker", linux84r_name);
     string argon;
     CivetServer::getParam(decodedPayload.c_str(), decodedPayload.size(), "argon", argon);
     for(int i=0;i<argon.size();i++) { // bugfix for decoding + to ' '
@@ -173,7 +173,7 @@ bool proxy_mine_handler::__handleSubmit(CivetServer *server, struct mg_connectio
     string address;
     CivetServer::getParam(decodedPayload.c_str(), decodedPayload.size(), "address", address);
 
-    string response = __server.get_proxy().process_submit_request(ip, miner_id, miner_name, argon, nonce, public_key);
+    string response = __server.get_proxy().process_submit_request(ip, linux84r_id, linux84r_name, argon, nonce, public_key);
 
     mg_printf(conn, response.c_str());
 
@@ -225,7 +225,7 @@ bool proxy_api_handler::handleGet(CivetServer *server, struct mg_connection *con
             response["best_dl"] = status.best_dl;
         }
         else if(!context.empty()) {
-            miner_status status = __server.get_proxy().get_worker_status(context);
+            linux84r_status status = __server.get_proxy().get_worker_status(context);
 
             response["cblocks_hashrate"] = status.cblocks_hashrate;
             response["gblocks_hashrate"] = status.gblocks_hashrate;
@@ -245,9 +245,9 @@ bool proxy_api_handler::handleGet(CivetServer *server, struct mg_connection *con
     }
     else if(query == "getGlobalHashrateHistory") {
         response = json::JSON::Make(json::JSON::Class::Array);
-        list<miner_hashrate> history;
+        list<linux84r_hashrate> history;
         __server.get_proxy().get_global_hashrate_history(history);
-        for(list<miner_hashrate>::iterator iter = history.begin(); iter != history.end(); iter++) {
+        for(list<linux84r_hashrate>::iterator iter = history.begin(); iter != history.end(); iter++) {
             json::JSON entry = json::JSON::Make(json::JSON::Class::Object);
             entry["cblocks_hashrate"] = iter->cblocks_hashrate;
             entry["gblocks_hashrate"] = iter->gblocks_hashrate;
@@ -257,9 +257,9 @@ bool proxy_api_handler::handleGet(CivetServer *server, struct mg_connection *con
     }
     else if(query == "getWorkersList") {
         response = json::JSON::Make(json::JSON::Class::Array);
-        vector<miner_list_item> workers;
+        vector<linux84r_list_item> workers;
         __server.get_proxy().get_workers_list(workers);
-        for(vector<miner_list_item>::iterator iter = workers.begin(); iter != workers.end(); iter++) {
+        for(vector<linux84r_list_item>::iterator iter = workers.begin(); iter != workers.end(); iter++) {
             json::JSON entry = json::JSON::Make(json::JSON::Class::Object);
             entry["worker_name"] = iter->worker_name;
             entry["cblocks_hashrate"] = iter->cblocks_hashrate;
@@ -294,9 +294,9 @@ bool proxy_api_handler::handleGet(CivetServer *server, struct mg_connection *con
 
         if(!worker_id.empty()) {
             response = json::JSON::Make(json::JSON::Class::Array);
-            list<miner_hashrate> history;
+            list<linux84r_hashrate> history;
             __server.get_proxy().get_worker_hashrate_history(worker_id, history);
-            for (list<miner_hashrate>::iterator iter = history.begin(); iter != history.end(); iter++) {
+            for (list<linux84r_hashrate>::iterator iter = history.begin(); iter != history.end(); iter++) {
                 json::JSON entry = json::JSON::Make(json::JSON::Class::Object);
                 entry["cblocks_hashrate"] = iter->cblocks_hashrate;
                 entry["gblocks_hashrate"] = iter->gblocks_hashrate;
