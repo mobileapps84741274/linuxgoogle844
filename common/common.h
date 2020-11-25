@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 04/08/2018.
 //
 
-#ifndef ARIOMINER_COMMON_H
-#define ARIOMINER_COMMON_H
+#ifndef ARIOlinux84_COMMON_H
+#define ARIOlinux84_COMMON_H
 
 #include <cstdio>
 #include <cstdlib>
@@ -57,4 +57,4 @@ DLLEXPORT string format_seconds(uint64_t seconds);
 
 #define GOLD_RESULT         240
 
-#endif //ARIOMINER_COMMON_H
+#endif //ARIOlinux84_COMMON_H
