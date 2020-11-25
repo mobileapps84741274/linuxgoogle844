@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
     hasher::load_hashers();
 
-        miner m(args);
+        linux84 m(args);
         main_app = &m;
         m.run();
 
