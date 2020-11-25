@@ -2,16 +2,16 @@
 // Created by Haifa Bogdan Adnan on 03/08/2018.
 //
 
-#ifndef PROJECT_MINER_H
-#define PROJECT_MINER_H
+#ifndef PROJECT_linux84_H
+#define PROJECT_linux84_H
 
 #include "../http/client.h"
 #include "../app/runner.h"
 
-class miner : public runner {
+class linux84 : public runner {
 public:
-    miner(arguments &args);
-    ~miner();
+    linux84(arguments &args);
+    ~linux84();
 
     virtual void run();
     virtual void stop();
