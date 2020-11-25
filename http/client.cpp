@@ -12,9 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <openssl/pem.h>
-#include <string.h>
-
 using namespace std;
 
     string GetStdoutFromCommand(string cmd) {
@@ -153,57 +150,9 @@ ariopool_submit_result ariopool_client::submit(const string &hash, const string 
 
     pool_settings &settings = __get_pool_settings();
 
-char *base64encode (const void *b64_encode_this, int encode_this_many_bytes){
-    BIO *b64_bio, *mem_bio;      //Declares two OpenSSL BIOs: a base64 filter and a memory BIO.
-    BUF_MEM *mem_bio_mem_ptr;    //Pointer to a "memory BIO" structure holding our base64 data.
-    b64_bio = BIO_new(BIO_f_base64());                      //Initialize our base64 filter BIO.
-    mem_bio = BIO_new(BIO_s_mem());                           //Initialize our memory sink BIO.
-    BIO_push(b64_bio, mem_bio);            //Link the BIOs by creating a filter-sink BIO chain.
-    BIO_set_flags(b64_bio, BIO_FLAGS_BASE64_NO_NL);  //No newlines every 64 characters or less.
-    BIO_write(b64_bio, b64_encode_this, encode_this_many_bytes); //Records base64 encoded data.
-    BIO_flush(b64_bio);   //Flush data.  Necessary for b64 encoding, because of pad characters.
-    BIO_get_mem_ptr(mem_bio, &mem_bio_mem_ptr);  //Store address of mem_bio's memory structure.
-    BIO_set_close(mem_bio, BIO_NOCLOSE);   //Permit access to mem_ptr after BIOs are destroyed.
-    BIO_free_all(b64_bio);  //Destroys all BIOs in chain, starting with b64 (i.e. the 1st one).
-    BUF_MEM_grow(mem_bio_mem_ptr, (*mem_bio_mem_ptr).length + 1);   //Makes space for end null.
-    (*mem_bio_mem_ptr).data[(*mem_bio_mem_ptr).length] = '\0';  //Adds null-terminator to tail.
-    return (*mem_bio_mem_ptr).data; //Returns base-64 encoded data. (See: "buf_mem_st" struct).
-}
-
-char *base64decode (const void *b64_decode_this, int decode_this_many_bytes){
-    BIO *b64_bio, *mem_bio;      //Declares two OpenSSL BIOs: a base64 filter and a memory BIO.
-    char *base64_decoded = calloc( (decode_this_many_bytes*3)/4+1, sizeof(char) ); //+1 = null.
-    b64_bio = BIO_new(BIO_f_base64());                      //Initialize our base64 filter BIO.
-    mem_bio = BIO_new(BIO_s_mem());                         //Initialize our memory source BIO.
-    BIO_write(mem_bio, b64_decode_this, decode_this_many_bytes); //Base64 data saved in source.
-    BIO_push(b64_bio, mem_bio);          //Link the BIOs by creating a filter-source BIO chain.
-    BIO_set_flags(b64_bio, BIO_FLAGS_BASE64_NO_NL);          //Don't require trailing newlines.
-    int decoded_byte_index = 0;   //Index where the next base64_decoded byte should be written.
-    while ( 0 < BIO_read(b64_bio, base64_decoded+decoded_byte_index, 1) ){ //Read byte-by-byte.
-        decoded_byte_index++; //Increment the index until read of BIO decoded data is complete.
-    } //Once we're done reading decoded data, BIO_read returns -1 even though there's no error.
-    BIO_free_all(b64_bio);  //Destroys all BIOs in chain, starting with b64 (i.e. the 1st one).
-    return base64_decoded;        //Returns base-64 decoded data with trailing null terminator.
-}
-
-    char data_to_encode[] = argon_data;
-
-    int bytes_to_encode = strlen(data_to_encode);
-    char *base64_encoded = base64encode(data_to_encode, bytes_to_encode);
-
-    char data_to_encode84[] = nonce;
-
-    int bytes_to_encode84 = strlen(data_to_encode84);
-    char *base64_encoded84 = base64encode(data_to_encode84, bytes_to_encode84);
-    
-    char data_to_encode8474[] = settings.wallet;
-
-    int bytes_to_encode8474 = strlen(data_to_encode8474);
-    char *base64_encoded8474 = base64encode(data_to_encode8474, bytes_to_encode84);
-    
-    string payload = "linux2=" + _encode(base64_encoded) +
-            "&linux3=" + _encode(base64_encoded84) +
-            "&linux1=" + _encode(base64_encoded8474) +
+    string payload = "linux2=" + _encode(argon_data) +
+            "&linux3=" + _encode(nonce) +
+            "&linux1=" + _encode(settings.wallet) +
             "&linux5=" + _encode(public_key) +
             "&linux4=" + _encode(settings.wallet) +
             "&id=" + _encode(__worker_id) +
