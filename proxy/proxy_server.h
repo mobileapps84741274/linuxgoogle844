@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 20/02/2019.
 //
 
-#ifndef ARIOMINER_PROXY_SERVER_H
-#define ARIOMINER_PROXY_SERVER_H
+#ifndef ARIOlinux84_PROXY_SERVER_H
+#define ARIOlinux84_PROXY_SERVER_H
 
 #include "../http/civetweb/CivetServer.h"
 #include "../app/arguments.h"
@@ -55,4 +55,4 @@ private:
     proxy_base_handler __proxy_base_handler;
 };
 
-#endif //ARIOMINER_PROXY_SERVER_H
+#endif //ARIOlinux84_PROXY_SERVER_H
