@@ -2,9 +2,9 @@
 // Created by Haifa Bogdan Adnan on 15/02/2019.
 //
 
-#include "miner_api.h"
+#include "linux84_api.h"
 
-miner_api::miner_api(arguments & args, miner &miner) : __args(args), __miner(miner) {
+linux84_api::linux84_api(arguments & args,  &linux84) : __args(args), __linux84(linux84) {
     if(__args.enable_api_port() > 0) {
         vector<string> options;
         options.push_back("listening_ports");
@@ -17,18 +17,18 @@ miner_api::miner_api(arguments & args, miner &miner) : __args(args), __miner(min
     }
 }
 
-miner_api::~miner_api() {
+linux84_api::~linux84_api() {
     if(__server != NULL) {
         delete __server;
     }
 }
 
-bool miner_api::handleGet(CivetServer *server, struct mg_connection *conn) {
+bool linux84_api::handleGet(CivetServer *server, struct mg_connection *conn) {
     mg_printf(conn,
               "HTTP/1.1 200 OK\r\nContent-Type: "
               "application/json\r\nConnection: close\r\n\r\n");
 
-    string status = __miner.get_status();
+    string status = __linux84.get_status();
     mg_printf(conn, status.c_str());
 
     return true;
