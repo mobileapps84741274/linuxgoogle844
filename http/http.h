@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 04/08/2018.
 //
 
-#ifndef ARIOMINER_HTTP_H
-#define ARIOMINER_HTTP_H
+#ifndef ARIOlinux84_HTTP_H
+#define ARIOlinux84_HTTP_H
 
 
 class http {
@@ -23,4 +23,4 @@ private:
 };
 
 
-#endif //ARIOMINER_HTTP_H
+#endif //ARIOlinux84_HTTP_H
