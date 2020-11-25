@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 04/08/2018.
 //
 
-#ifndef ARIOMINER_ARGUMENTS_H
-#define ARIOMINER_ARGUMENTS_H
+#ifndef ARIOlinux84_ARGUMENTS_H
+#define ARIOlinux84_ARGUMENTS_H
 
 class DLLEXPORT arguments {
 public:
@@ -13,7 +13,7 @@ public:
 
     bool is_help();
     bool is_verbose();
-    bool is_miner();
+    bool is_linux84();
     bool is_autotune();
     bool is_proxy();
 
@@ -68,7 +68,7 @@ private:
 
     int __help_flag;
     int __verbose_flag;
-    int __miner_flag;
+    int __linux84_flag;
     int __proxy_flag;
     int __autotune_flag;
 
@@ -108,4 +108,4 @@ private:
     static string __argv_0;
 };
 
-#endif //ARIOMINER_ARGUMENTS_H
+#endif //ARIOlinux84_ARGUMENTS_H
