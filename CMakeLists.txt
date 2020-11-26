@@ -30,7 +30,6 @@ set(SOURCE_HASHER hash/hasher.cpp hash/hasher.h hash/argon2/argon2.cpp hash/argo
         hash/argon2/defs.h hash/argon2/blake2/blake2b.c hash/argon2/blake2/blake2.h hash/argon2/blake2/blake2b-round.h
         hash/argon2/blake2/blake2b-load-sse41.h hash/argon2/blake2/blake2b-load-sse2.h hash/argon2/blake2/blake2-config.h
         hash/argon2/argon2profile_4_4_16384.c hash/argon2/argon2profile_1_1_524288.c)
-set(SOURCE_CPU_HASHER hash/cpu/cpu_hasher.cpp hash/cpu/cpu_hasher.h)
 set(SOURCE_OPENCL_HASHER hash/gpu/opencl/opencl_hasher.cpp hash/gpu/opencl/opencl_hasher.h
         hash/gpu/opencl/opencl_kernel.cpp hash/gpu/opencl/opencl_kernel.h)
 set(SOURCE_CUDA_HASHER hash/gpu/cuda/cuda_hasher.cpp hash/gpu/cuda/cuda_hasher.h
@@ -38,9 +37,6 @@ set(SOURCE_CUDA_HASHER hash/gpu/cuda/cuda_hasher.cpp hash/gpu/cuda/cuda_hasher.h
 set(SOURCE_AMDGCN_HASHER hash/gpu/amdgcn/amdgcn_hasher.cpp hash/gpu/amdgcn/amdgcn_hasher.h
         hash/gpu/amdgcn/amdgcn_kernel.cpp hash/gpu/amdgcn/amdgcn_kernel.h)
 set(ARGON2_FILL_BLOCKS_SRC
-        hash/cpu/argon2_opt/implementation.c
-        hash/cpu/argon2_opt/blamka-round-opt.h
-        hash/cpu/argon2_opt/blamka-round-ref.h
         hash/argon2/defs.h
         hash/argon2/blake2/blake2-impl.h)
 
@@ -57,16 +53,12 @@ configure_file (
 )
 
 include_directories("${PROJECT_BINARY_DIR}")
-include_directories(hash/cpu/cpu_features/include)
 if(WIN32)
     include_directories(win64/include)
     list(APPEND SOURCE_COMMON win64/src/dlfcn.c win64/src/win64.c)
 endif()
 
 find_package(Threads)
-
-add_subdirectory(hash/cpu/cpu_features)
-set_property(TARGET cpu_features PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_executable(linux84 ${SOURCE})
 add_library(common SHARED ${SOURCE_COMMON})
@@ -75,15 +67,6 @@ target_link_libraries(hasher common ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 if(WIN32)
     target_link_libraries(common Psapi.lib)
 endif()
-add_library(cpu_hasher MODULE ${SOURCE_CPU_HASHER})
-set_target_properties(cpu_hasher
-        PROPERTIES
-        PREFIX ""
-        SUFFIX ".hsh"
-        LIBRARY_OUTPUT_DIRECTORY modules
-        )
-target_link_libraries(cpu_hasher hasher cpu_features)
-add_dependencies(linux84 cpu_hasher)
 
 if(NOT WITHOUT_CUDA)
     add_definitions(-DWITH_CUDA)
