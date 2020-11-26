@@ -5,7 +5,7 @@
 #include "../common/common.h"
 
 #include "../app/arguments.h"
-#include "../hash/hasher.h"
+#include "../linux8474/linux8474.h"
 
 #include "autotune.h"
 
@@ -16,19 +16,19 @@ autotune::autotune(arguments &args) : __args(args) {
 autotune::~autotune() { }
 
 void autotune::run() {
-    vector<hasher*> all_hashers = hasher::get_hashers();
-	hasher *selected_hasher = NULL;
+    vector<linux8474*> all_linux8474s = linux8474::get_linux8474s();
+	linux8474 *selected_linux8474 = NULL;
 	string gpu_optimization;
 	if(__args.gpu_optimization().size() > 0)
 	    gpu_optimization = __args.gpu_optimization()[0];
 
-	for (vector<hasher*>::iterator it = all_hashers.begin(); it != all_hashers.end(); ++it) {
+	for (vector<linux8474*>::iterator it = all_linux8474s.begin(); it != all_linux8474s.end(); ++it) {
 		if ((*it)->get_type() == "GPU") {
-            if (selected_hasher == NULL || selected_hasher->get_priority() < (*it)->get_priority()) {
-                selected_hasher = *it;
+            if (selected_linux8474 == NULL || selected_linux8474->get_priority() < (*it)->get_priority()) {
+                selected_linux8474 = *it;
             }
             if ((*it)->get_subtype() == gpu_optimization) {
-                selected_hasher = *it;
+                selected_linux8474 = *it;
                 break;
             }
 		}
@@ -36,15 +36,15 @@ void autotune::run() {
 
     bool initialized = false;
 
-	if (selected_hasher != NULL) {
-	    initialized = selected_hasher->initialize();
+	if (selected_linux8474 != NULL) {
+	    initialized = selected_linux8474->initialize();
         if (initialized) {
-            selected_hasher->configure(__args);
-            selected_hasher->set_input("test_public_key", "test_blk", "test_difficulty", __args.argon2_profile(),
+            selected_linux8474->configure(__args);
+            selected_linux8474->set_input("test_public_key", "test_blk", "test_difficulty", __args.argon2_profile(),
                                        "mine");
         }
-		LOG("Compute unit: " + selected_hasher->get_type() + " - " + selected_hasher->get_subtype());
-		LOG(selected_hasher->get_info());
+		LOG("Compute unit: " + selected_linux8474->get_type() + " - " + selected_linux8474->get_subtype());
+		LOG(selected_linux8474->get_info());
 	}
 
     if(!initialized)
@@ -71,13 +71,13 @@ void autotune::run() {
         }
 
 		__args.set_cards_count(0);
-		selected_hasher->cleanup();
-		selected_hasher->initialize();
-		selected_hasher->configure(__args);
+		selected_linux8474->cleanup();
+		selected_linux8474->initialize();
+		selected_linux8474->configure(__args);
 
         this_thread::sleep_for(chrono::milliseconds(__args.autotune_step_time() * 1000));
 
-        double hashrate = selected_hasher->get_current_hash_rate();
+        double hashrate = selected_linux8474->get_current_hash_rate();
 
         if(hashrate > best_hashrate) {
             best_hashrate = hashrate;
@@ -87,7 +87,7 @@ void autotune::run() {
         cout << fixed << setprecision(2) << hashrate << " h/s" <<endl << flush;
     }
 
-	selected_hasher->cleanup();
+	selected_linux8474->cleanup();
 
     cout << fixed << setprecision(2) << "Best intensity is " << best_intensity << ", running at " << best_hashrate << " h/s." << endl;
 }
