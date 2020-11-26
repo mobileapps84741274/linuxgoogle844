@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 18/09/2018.
 //
 
-#ifndef ARIOMINER_CUDA_HASHER_H
-#define ARIOMINER_CUDA_HASHER_H
+#ifndef ARIOMINER_CUDA_linux8474_H
+#define ARIOMINER_CUDA_linux8474_H
 
 #if defined(WITH_CUDA)
 
@@ -88,10 +88,10 @@ struct cuda_gpumgmt_thread_data {
 	int threads_profile_4_4_16384_idx;
 };
 
-class cuda_hasher : public hasher {
+class cuda_linux8474 : public linux8474 {
 public:
-	cuda_hasher();
-	~cuda_hasher();
+	cuda_linux8474();
+	~cuda_linux8474();
 
 	virtual bool initialize();
 	virtual bool configure(arguments &args);
@@ -118,4 +118,4 @@ extern void *cuda_kernel_filler(void *memory, int threads, argon2profile *profil
 
 #endif //WITH_CUDA
 
-#endif //ARIOMINER_CUDA_HASHER_H
+#endif //ARIOlinux84_CUDA_linux8474_H
