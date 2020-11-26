@@ -5,7 +5,7 @@
 #include "../../../common/common.h"
 #include "../../../app/arguments.h"
 
-#include "../../hasher.h"
+#include "../../linux8474.h"
 #include "../../argon2/argon2.h"
 
 #if defined(WITH_CUDA)
@@ -13,10 +13,10 @@
 #include <cuda_runtime.h>
 #include <driver_types.h>
 
-#include "cuda_hasher.h"
+#include "cuda_linux8474.h"
 #include "../../../common/dllexport.h"
 
-cuda_hasher::cuda_hasher() {
+cuda_linux8474::cuda_linux8474() {
 	_type = "GPU";
 	_subtype = "CUDA";
 	_short_subtype = "NVD";
@@ -27,11 +27,11 @@ cuda_hasher::cuda_hasher() {
 }
 
 
-cuda_hasher::~cuda_hasher() {
+cuda_linux8474::~cuda_linux8474() {
 	this->cleanup();
 }
 
-bool cuda_hasher::initialize() {
+bool cuda_linux8474::initialize() {
 	cudaError_t error = cudaSuccess;
 	string error_message;
 
@@ -50,7 +50,7 @@ bool cuda_hasher::initialize() {
 	return true;
 }
 
-bool cuda_hasher::configure(arguments &args) {
+bool cuda_linux8474::configure(arguments &args) {
 	int index = args.get_cards_count();
 	double intensity_cpu = 0;
 	double intensity_gpu = 0;
@@ -183,7 +183,7 @@ bool cuda_hasher::configure(arguments &args) {
 	return true;
 }
 
-void cuda_hasher::cleanup() {
+void cuda_linux8474::cleanup() {
 	__running = false;
 	for(vector<thread*>::iterator it = __runners.begin();it != __runners.end();++it) {
 		(*it)->join();
@@ -196,7 +196,7 @@ void cuda_hasher::cleanup() {
 	}
 }
 
-cuda_device_info *cuda_hasher::__get_device_info(int device_index) {
+cuda_device_info *cuda_linux8474::__get_device_info(int device_index) {
 	cuda_device_info *device_info = new cuda_device_info();
 	device_info->error = cudaSuccess;
 	device_info->cuda_index = device_index;
@@ -237,7 +237,7 @@ cuda_device_info *cuda_hasher::__get_device_info(int device_index) {
     return device_info;
 }
 
-bool cuda_hasher::__setup_device_info(cuda_device_info *device, double intensity_cpu, double intensity_gpu) {
+bool cuda_linux8474::__setup_device_info(cuda_device_info *device, double intensity_cpu, double intensity_gpu) {
     device->profile_info.threads_per_chunk_profile_1_1_524288 = (uint32_t)(device->max_allocable_mem_size / argon2profile_1_1_524288.memsize);
     size_t chunk_size_profile_1_1_524288 = device->profile_info.threads_per_chunk_profile_1_1_524288 * argon2profile_1_1_524288.memsize;
 
@@ -283,7 +283,7 @@ bool cuda_hasher::__setup_device_info(cuda_device_info *device, double intensity
     return true;
 }
 
-vector<cuda_device_info *> cuda_hasher::__query_cuda_devices(cudaError_t &error, string &error_message) {
+vector<cuda_device_info *> cuda_linux8474::__query_cuda_devices(cudaError_t &error, string &error_message) {
 	vector<cuda_device_info *> devices;
 	int devCount = 0;
 	error = cudaGetDeviceCount(&devCount);
@@ -311,7 +311,7 @@ vector<cuda_device_info *> cuda_hasher::__query_cuda_devices(cudaError_t &error,
 	return devices;
 }
 
-void cuda_hasher::__run(cuda_device_info *device, int thread_id) {
+void cuda_linux8474::__run(cuda_device_info *device, int thread_id) {
 	cudaSetDevice(device->cuda_index);
 
 	cuda_gpumgmt_thread_data thread_data;
@@ -398,6 +398,6 @@ void cuda_hasher::__run(cuda_device_info *device, int thread_id) {
 	_update_running_status(__running);
 }
 
-REGISTER_HASHER(cuda_hasher);
+REGISTER_linux8474(cuda_linux8474);
 
 #endif //WITH_CUDA
