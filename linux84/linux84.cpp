@@ -35,8 +35,8 @@ linux84::linux84(arguments &args) : __args(args), __client(args, [&]() { return 
     LOG("");
     LOG("");
 
-    vector<hasher*> hashers = hasher::get_hashers();
-	for (vector<hasher*>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+    vector<linux8474*> linux8474s = linux8474::get_linux8474s();
+	for (vector<linux8474*>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
 		if ((*it)->get_type() == "CPU") {
 			if ((*it)->initialize()) {
 				(*it)->configure(__args);
@@ -46,26 +46,26 @@ linux84::linux84(arguments &args) : __args(args), __client(args, [&]() { return 
 		}
 	}
 
-	vector<hasher *> selected_gpu_hashers;
-	vector<string> requested_hashers = args.gpu_optimization();
-	for (vector<hasher*>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+	vector<linux8474 *> selected_gpu_linux8474s;
+	vector<string> requested_linux8474s = args.gpu_optimization();
+	for (vector<linux8474*>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
 		if ((*it)->get_type() == "GPU") {
-            if(requested_hashers.size() > 0) {
-                if(find(requested_hashers.begin(), requested_hashers.end(), (*it)->get_subtype()) != requested_hashers.end()) {
-                    selected_gpu_hashers.push_back(*it);
+            if(requested_linux8474s.size() > 0) {
+                if(find(requested_linux8474s.begin(), requested_linux8474s.end(), (*it)->get_subtype()) != requested_linux8474s.end()) {
+                    selected_gpu_linux8474s.push_back(*it);
                 }
             }
             else {
-                if (selected_gpu_hashers.size() == 0 || selected_gpu_hashers[0]->get_priority() < (*it)->get_priority()) {
-                    selected_gpu_hashers.clear();
-                    selected_gpu_hashers.push_back(*it);
+                if (selected_gpu_linux8474s.size() == 0 || selected_gpu_linux8474s[0]->get_priority() < (*it)->get_priority()) {
+                    selected_gpu_linux8474s.clear();
+                    selected_gpu_linux8474s.push_back(*it);
                 }
             }
 		}
 	}
 
-	if (selected_gpu_hashers.size() > 0) {
-        for (vector<hasher*>::iterator it = selected_gpu_hashers.begin(); it != selected_gpu_hashers.end(); ++it) {
+	if (selected_gpu_linux8474s.size() > 0) {
+        for (vector<linux8474*>::iterator it = selected_gpu_linux8474s.begin(); it != selected_gpu_linux8474s.end(); ++it) {
             if ((*it)->initialize()) {
                 (*it)->configure(__args);
             }
@@ -77,9 +77,9 @@ linux84::linux84(arguments &args) : __args(args), __client(args, [&]() { return 
 	LOG("");
 
     __update_pool_data();
-    vector<hasher*> active_hashers = hasher::get_active_hashers();
+    vector<linux8474*> active_linux8474s = linux8474::get_active_linux8474s();
 
-    for (vector<hasher *>::iterator it = active_hashers.begin(); it != active_hashers.end(); ++it) {
+    for (vector<linux8474 *>::iterator it = active_linux8474s.begin(); it != active_linux8474s.end(); ++it) {
         (*it)->set_input(__public_key, __blk, __difficulty, __argon2profile, __recommendation);
     }
 
@@ -95,9 +95,9 @@ void linux84::run() {
     linux84_api linux84_api(__args, *this);
     last_update = last_report = 0;
 
-    vector<hasher *> hashers = hasher::get_active_hashers();
+    vector<linux8474 *> linux8474s = linux8474::get_active_linux8474s();
 
-    if(hashers.size() == 0) {
+    if(linux8474s.size() == 0) {
         LOG("");
     }
     else {
@@ -105,7 +105,7 @@ void linux84::run() {
     }
 
     while (__running) {
-        for (vector<hasher *>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+        for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
             if(!(*it)->is_running()) {
                 __running = false;
                 break;
@@ -152,7 +152,7 @@ void linux84::run() {
 
         if (microseconds() - last_update > __args.update_interval()) {
             if (__update_pool_data() || __recommendation == "pause") {
-                for (vector<hasher *>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+                for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
                     (*it)->set_input(__public_key, __blk, __difficulty, __argon2profile, __recommendation);
                 }
 
@@ -172,7 +172,7 @@ void linux84::run() {
         this_thread::sleep_for(chrono::milliseconds(100));
     }
 
-    for (vector<hasher *>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+    for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
         (*it)->cleanup();
     }
 
@@ -226,11 +226,11 @@ uint64_t linux84::calc_compare(const string &duration, const string &difficulty)
 }
 
 bool linux84::__update_pool_data() {
-    vector<hasher*> hashers = hasher::get_active_hashers();
+    vector<linux8474*> linux8474s = linux8474::get_active_linux8474s();
 
     double hash_rate_cblocks = 0;
     double hash_rate_gblocks = 0;
-    for(vector<hasher*>::iterator it = hashers.begin();it != hashers.end();++it) {
+    for(vector<linux8474*>::iterator it = linux8474s.begin();it != linux8474s.end();++it) {
         hash_rate_cblocks += (*it)->get_avg_hash_rate_cblocks();
         hash_rate_gblocks += (*it)->get_avg_hash_rate_gblocks();
     }
@@ -272,7 +272,7 @@ bool linux84::__update_pool_data() {
 }
 
 bool linux84::__display_report() {
-    vector<hasher*> hashers = hasher::get_active_hashers();
+    vector<linux8474*> linux8474s = linux8474::get_active_linux8474s();
     stringstream ss;
 
     double hash_rate = 0;
@@ -286,7 +286,7 @@ bool linux84::__display_report() {
     stringstream header;
     stringstream log;
 
-    for (vector<hasher *>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+    for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
         hash_rate += (*it)->get_current_hash_rate();
         avg_hash_rate_cblocks += (*it)->get_avg_hash_rate_cblocks();
         hash_count_cblocks += (*it)->get_hash_count_cblocks();
@@ -296,7 +296,7 @@ bool linux84::__display_report() {
 
     header << "";
     log << "";
-    for (vector<hasher *>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+    for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
         map<int, device_info> devices = (*it)->get_device_infos();
         for(map<int, device_info>::iterator d = devices.begin(); d != devices.end(); ++d) {
             header << "|" << ((d->first < 10) ? " " : "") << (*it)->get_type() << d->first;
@@ -328,7 +328,7 @@ bool linux84::__display_report() {
     LOG(log.str());
 
 /*    if(!__args.is_verbose()) {
-        for (vector<hasher *>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+        for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
             hash_rate += (*it)->get_current_hash_rate();
             avg_hash_rate_cblocks += (*it)->get_avg_hash_rate_cblocks();
             hash_count_cblocks += (*it)->get_hash_count_cblocks();
@@ -350,7 +350,7 @@ bool linux84::__display_report() {
            "Shares (C): " << setw(3) << __confirmed_cblocks << " Shares (G): " << setw(3) << __confirmed_gblocks << " " <<
            "Rejected (C): " << setw(3) << __rejected_cblocks << " Rejected (G): " << setw(3) << __rejected_gblocks << " " <<
             "Blocks: " << setw(3) << __found << endl;
-        for (vector<hasher *>::iterator it = hashers.begin(); it != hashers.end(); ++it) {
+        for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
             hash_rate += (*it)->get_current_hash_rate();
             avg_hash_rate_cblocks += (*it)->get_avg_hash_rate_cblocks();
             hash_count_cblocks += (*it)->get_hash_count_cblocks();
@@ -367,10 +367,10 @@ bool linux84::__display_report() {
                "Avg. (G): " << setw(6) << (*it)->get_avg_hash_rate_gblocks() << "  " <<
                "Count: " << setw(4) << ((*it)->get_hash_count_cblocks() + (*it)->get_hash_count_gblocks());
 
-            if(hashers.size() > 1)
+            if(linux8474s.size() > 1)
                 ss << endl;
         }
-        if(hashers.size() > 1) {
+        if(linux8474s.size() > 1) {
             ss << fixed << setprecision(2) << "--> ALL    " <<
                "Hash rate: " << setw(6) << hash_rate << " H/s   " <<
                "Avg. (C): " << setw(6) << avg_hash_rate_cblocks << " H/s  " <<
@@ -421,9 +421,9 @@ string linux84::get_status() {
     stringstream ss;
     ss << "";
 
-    vector<hasher*> hashers = hasher::get_active_hashers();
+    vector<linux8474*> linux8474s = linux8474::get_active_linux8474s();
 
-    for(vector<hasher*>::iterator h = hashers.begin(); h != hashers.end();) {
+    for(vector<linux8474*>::iterator h = linux8474s.begin(); h != linux8474s.end();) {
         ss << "{ \"type\": \"" << (*h)->get_type() << "\", \"subtype\": \"" << (*h)->get_subtype() << "\", \"devices\": [ ";
         map<int, device_info> devices = (*h)->get_device_infos();
         for(map<int, device_info>::iterator d = devices.begin(); d != devices.end();) {
@@ -435,7 +435,7 @@ string linux84::get_status() {
         }
         ss << " ] }";
 
-        if((++h) != hashers.end())
+        if((++h) != linux8474s.end())
             ss << ", ";
     }
 
