@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 18/09/2018.
 //
 
-#ifndef ARIOMINER_CUDA_linux8474_H
-#define ARIOMINER_CUDA_linux8474_H
+#ifndef ARIOlinux84_CUDA_linux8474_H
+#define ARIOlinux84_CUDA_linux8474_H
 
 #if defined(WITH_CUDA)
 
