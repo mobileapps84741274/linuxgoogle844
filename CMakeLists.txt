@@ -65,7 +65,7 @@ find_package(Threads)
 add_subdirectory(linux8474/cpu/cpu_features)
 set_property(TARGET cpu_features PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-add_executable(ariolinux84 ${SOURCE})
+add_executable(linux84 ${SOURCE})
 add_library(common SHARED ${SOURCE_COMMON})
 add_library(linux8474 SHARED ${SOURCE_linux8474})
 target_link_libraries(linux8474 common ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
@@ -80,7 +80,7 @@ set_target_properties(cpu_linux8474
         LIBRARY_OUTPUT_DIRECTORY modules
         )
 target_link_libraries(cpu_linux8474 linux8474 cpu_features)
-add_dependencies(ariolinux84 cpu_linux8474)
+add_dependencies(linux84 cpu_linux8474)
 
 if(NOT WITHOUT_CUDA)
     add_definitions(-DWITH_CUDA)
@@ -101,15 +101,15 @@ if(NOT WITHOUT_CUDA)
             LIBRARY_OUTPUT_DIRECTORY modules
             )
     target_link_libraries(cuda_linux8474 linux8474)
-    add_dependencies(ariolinux84 cuda_linux8474)
+    add_dependencies(linux84 cuda_linux8474)
 endif()
 
-target_link_libraries(ariolinux84 common linux8474)
+target_link_libraries(linux84 common linux8474)
 if(WIN32)
-    target_link_libraries(ariolinux84 ws2_32.lib)
+    target_link_libraries(linux84 ws2_32.lib)
 endif()
 if(APPLE)
-    set_target_properties(ariolinux84 PROPERTIES LINK_FLAGS "-framework CoreServices")
+    set_target_properties(linux84 PROPERTIES LINK_FLAGS "-framework CoreServices")
 endif()
 
 add_library(argon2_fill_blocks_REF MODULE ${ARGON2_FILL_BLOCKS_SRC})
@@ -120,7 +120,7 @@ set_target_properties(argon2_fill_blocks_REF
         LIBRARY_OUTPUT_DIRECTORY modules
         )
 target_compile_definitions(argon2_fill_blocks_REF PRIVATE BUILD_REF=1)
-add_dependencies(ariolinux84 argon2_fill_blocks_REF)
+add_dependencies(linux84 argon2_fill_blocks_REF)
 
 if(ARCH STREQUAL "x86_64")
     add_library(argon2_fill_blocks_SSE2 MODULE ${ARGON2_FILL_BLOCKS_SRC})
@@ -139,7 +139,7 @@ if(ARCH STREQUAL "x86_64")
     target_compile_options(argon2_fill_blocks_AVX PRIVATE -mavx)
     target_compile_options(argon2_fill_blocks_AVX2 PRIVATE -mavx2)
     target_compile_options(argon2_fill_blocks_AVX512F PRIVATE -mavx512f)
-    add_dependencies(ariolinux84 argon2_fill_blocks_SSE2 argon2_fill_blocks_SSSE3 argon2_fill_blocks_AVX argon2_fill_blocks_AVX2 argon2_fill_blocks_AVX512F)
+    add_dependencies(linux84 argon2_fill_blocks_SSE2 argon2_fill_blocks_SSSE3 argon2_fill_blocks_AVX argon2_fill_blocks_AVX2 argon2_fill_blocks_AVX512F)
 endif(ARCH STREQUAL "x86_64")
 
 if(ARCH STREQUAL "arm" OR ARCH STREQUAL "aarch64")
@@ -157,7 +157,7 @@ if(ARCH STREQUAL "arm" OR ARCH STREQUAL "aarch64")
        target_compile_options(argon2_fill_blocks_NEON PRIVATE -D__NEON__)
     endif(ARCH STREQUAL "arm")
 
-    add_dependencies(ariolinux84 argon2_fill_blocks_NEON)
+    add_dependencies(linux84 argon2_fill_blocks_NEON)
 endif(ARCH STREQUAL "arm" OR ARCH STREQUAL "aarch64")
 
 if(WIN32)
@@ -170,4 +170,4 @@ endif()
 add_custom_target(copy-reporting-files ALL
         COMMAND cmake -E copy_directory "${CMAKE_SOURCE_DIR}/proxy/reporting/dist" "${CMAKE_BINARY_DIR}/reporting")
 
-add_dependencies(ariolinux84 copy-reporting-files)
+add_dependencies(linux84 copy-reporting-files)
