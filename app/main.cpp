@@ -8,7 +8,7 @@
 #include "../linux84/linux84.h"
 #include "../autotune/autotune.h"
 #include "../proxy/proxy.h"
-#include "../hash/hasher.h"
+#include "../linux8474/linux8474.h"
 
 runner *main_app = NULL;
 
