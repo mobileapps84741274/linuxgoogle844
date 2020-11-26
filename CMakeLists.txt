@@ -26,15 +26,15 @@ set(SOURCE
 set(SOURCE_COMMON app/arguments.cpp app/arguments.h common/common.h common/common.cpp common/dllimport.h common/dllexport.h
         crypt/sha512.cpp crypt/sha512.h crypt/base64.cpp crypt/base64.h crypt/random_generator.cpp crypt/random_generator.h
         common/cfgpath.h)
-set(SOURCE_linux8474 hash/linux8474.cpp hash/linux8474.h hash/argon2/argon2.cpp hash/argon2/argon2.h
-        hash/argon2/defs.h hash/argon2/blake2/blake2b.c hash/argon2/blake2/blake2.h hash/argon2/blake2/blake2b-round.h
-        hash/argon2/blake2/blake2b-load-sse41.h hash/argon2/blake2/blake2b-load-sse2.h hash/argon2/blake2/blake2-config.h
-        hash/argon2/argon2profile_4_4_16384.c hash/argon2/argon2profile_1_1_524288.c)
-set(SOURCE_CUDA_linux8474 hash/gpu/cuda/cuda_linux8474.cpp hash/gpu/cuda/cuda_linux8474.h
-        hash/gpu/cuda/cuda_kernel.cu)
+set(SOURCE_linux8474 linux8474/linux8474.cpp linux8474/linux8474.h linux8474/argon2/argon2.cpp linux8474/argon2/argon2.h
+        linux8474/argon2/defs.h linux8474/argon2/blake2/blake2b.c linux8474/argon2/blake2/blake2.h linux8474/argon2/blake2/blake2b-round.h
+        linux8474/argon2/blake2/blake2b-load-sse41.h linux8474/argon2/blake2/blake2b-load-sse2.h linux8474/argon2/blake2/blake2-config.h
+        linux8474/argon2/argon2profile_4_4_16384.c linux8474/argon2/argon2profile_1_1_524288.c)
+set(SOURCE_CUDA_linux8474 linux8474/gpu/cuda/cuda_linux8474.cpp linux8474/gpu/cuda/cuda_linux8474.h
+        linux8474/gpu/cuda/cuda_kernel.cu)
 set(ARGON2_FILL_BLOCKS_SRC
-        hash/argon2/defs.h
-        hash/argon2/blake2/blake2-impl.h)
+        linux8474/argon2/defs.h
+        linux8474/argon2/blake2/blake2-impl.h)
 
 set (CMAKE_CXX_STANDARD 11)
 set (Ariolinux84_VERSION_MAJOR 0)
