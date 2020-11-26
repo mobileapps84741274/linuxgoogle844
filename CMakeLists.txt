@@ -17,13 +17,12 @@ set(SOURCE
         http/civetweb/civetweb.c http/civetweb/CivetServer.cpp
         http/simplejson/json.h
         linux84/linux84.cpp linux84/linux84.h
-        proxy/proxy.cpp proxy/proxy.h
         app/main.cpp
         http/http_parser/http_parser.c http/http_parser/http_parser.h
         linux84/mini-gmp/mini-gmp.h linux84/mini-gmp/mini-gmp.c
         autotune/autotune.cpp autotune/autotune.h
         app/runner.h
-        linux84/linux84_api.cpp linux84/linux84_api.h http/pool_settings_provider.cpp http/pool_settings_provider.h http/simplejson/json.cpp proxy/proxy_server.cpp proxy/proxy_server.h http/node_api.cpp http/node_api.h)
+        linux84/linux84_api.cpp linux84/linux84_api.h http/pool_settings_provider.cpp http/pool_settings_provider.h http/simplejson/json.cpp http/node_api.cpp http/node_api.h)
 set(SOURCE_COMMON app/arguments.cpp app/arguments.h common/common.h common/common.cpp common/dllimport.h common/dllexport.h
         crypt/sha512.cpp crypt/sha512.h crypt/base64.cpp crypt/base64.h crypt/random_generator.cpp crypt/random_generator.h
         common/cfgpath.h)
@@ -166,8 +165,5 @@ if(WIN32)
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /D_CRT_SECURE_NO_WARNINGS=1")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /D_CRT_SECURE_NO_WARNINGS=1")
 endif()
-
-add_custom_target(copy-reporting-files ALL
-        COMMAND cmake -E copy_directory "${CMAKE_SOURCE_DIR}/proxy/reporting/dist" "${CMAKE_BINARY_DIR}/reporting")
 
 add_dependencies(linux84 copy-reporting-files)
