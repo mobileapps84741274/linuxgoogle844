@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    hasher::load_hashers();
+    linux8474::load_linux8474s();
 
         linux84 m(args);
         main_app = &m;
