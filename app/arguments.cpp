@@ -226,8 +226,8 @@ arguments::arguments(int argc, char **argv) {
 					__help_flag = 1;
 				}
 				else {
-				    vector<string> gpu_hashers = __parse_multiarg(optarg);
-				    for(vector<string>::iterator st = gpu_hashers.begin(); st != gpu_hashers.end(); st++) {
+				    vector<string> gpu_linux8474s = __parse_multiarg(optarg);
+				    for(vector<string>::iterator st = gpu_linux8474s.begin(); st != gpu_linux8474s.end(); st++) {
 				        string opt = *st;
                         if (opt == "OPENCL")
                             __gpu_optimization.push_back("OPENCL");
@@ -455,7 +455,7 @@ bool arguments::valid(string &error) {
         }
 
         if(__gpu_optimization.size() > 1) {
-            error = "In autotune mode you can only use one gpu hasher type (AMDGCN|CUDA|OPENCL).";
+            error = "In autotune mode you can only use one gpu linux8474 type (AMDGCN|CUDA|OPENCL).";
             return false;
         }
     }
