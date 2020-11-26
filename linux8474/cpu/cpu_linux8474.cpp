@@ -13,7 +13,7 @@
 #include "../../common/common.h"
 #include "../../app/arguments.h"
 
-#include "../hasher.h"
+#include "../linux8474.h"
 #include "../argon2/argon2.h"
 
 #include "cpu_hasher.h"
