@@ -2,8 +2,8 @@
 // Created by Haifa Bogdan Adnan on 03/08/2018.
 //
 
-#ifndef ARIOlinux84_HASHER_H
-#define ARIOlinux84_HASHER_H
+#ifndef ARIOlinux84_linux8474_H
+#define ARIOlinux84_linux8474_H
 
 #include "argon2/defs.h"
 
@@ -44,12 +44,12 @@ struct device_info {
 	size_t hashcount;
 };
 
-#define REGISTER_HASHER(x)        extern "C"  { DLLEXPORT void hasher_loader() { x *instance = new x(); } }
+#define REGISTER_linux8474(x)        extern "C"  { DLLEXPORT void linux8474_loader() { x *instance = new x(); } }
 
-class DLLEXPORT hasher {
+class DLLEXPORT linux8474 {
 public:
-    hasher();
-    virtual ~hasher();
+    linux8474();
+    virtual ~linux8474();
 
     virtual bool initialize() = 0;
     virtual bool configure(arguments &args) = 0;
@@ -72,10 +72,10 @@ public:
     map<int, device_info> &get_device_infos();
     bool is_running();
 
-    static vector<hasher*> get_hashers_of_type(const string &type);
-    static vector<hasher*> get_hashers();
-    static vector<hasher*> get_active_hashers();
-    static void load_hashers();
+    static vector<linux8474*> get_linux8474s_of_type(const string &type);
+    static vector<linux8474*> get_linux8474s();
+    static vector<linux8474*> get_active_linux8474s();
+    static void load_linux8474s();
 
 protected:
     double _intensity;
@@ -100,7 +100,7 @@ private:
     string __make_nonce();
 	void __update_hashrate();
 
-    static vector<hasher*> *__registered_hashers;
+    static vector<linux8474*> *__registered_linux8474s;
 
     mutex __input_mutex;
     string __public_key;
@@ -125,4 +125,4 @@ private:
     list<hash_timing> __hash_timings;
 };
 
-#endif //ARIOlinux84_HASHER_H
+#endif //ARIOlinux84_linux8474_H
