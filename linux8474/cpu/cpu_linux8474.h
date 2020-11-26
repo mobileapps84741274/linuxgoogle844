@@ -5,7 +5,7 @@
 #ifndef ARIOMINER_CPU_linux8474_H
 #define ARIOMINER_CPU_linux8474_H
 
-class cpu_hasher : public hasher {
+class cpu_linux8474 : public linux8474 {
 public:
     cpu_linux8474();
     ~cpu_linux8474();
