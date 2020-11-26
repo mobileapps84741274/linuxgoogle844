@@ -19,7 +19,7 @@
 #include "cpu_linux8474.h"
 #include "../../common/dllexport.h"
 
-cpu_hasher::cpu_hasher() : hasher() {
+cpu_linux8474::cpu_linux8474() : linux8474() {
     _type = "CPU";
     _subtype = "CPU";
     __optimization = "REF";
@@ -31,11 +31,11 @@ cpu_hasher::cpu_hasher() : hasher() {
     __dll_handle = NULL;
 }
 
-cpu_hasher::~cpu_hasher() {
+cpu_linux8474::~cpu_linux8474() {
     this->cleanup();
 }
 
-bool cpu_hasher::configure(arguments &args) {
+bool cpu_linux8474::configure(arguments &args) {
     double intensity = args.cpu_intensity();
     if(args.cpu_optimization() != "") {
         _description += "Overiding detected optimization feature with " + args.cpu_optimization() + ".\n";
@@ -85,7 +85,7 @@ bool cpu_hasher::configure(arguments &args) {
     return true;
 }
 
-string cpu_hasher::__detect_features_and_make_description() {
+string cpu_linux8474::__detect_features_and_make_description() {
     stringstream ss;
 #if defined(__x86_64__) || defined(__i386__) || defined(_WIN64)
     char brand_string[49];
@@ -164,7 +164,7 @@ string cpu_hasher::__detect_features_and_make_description() {
     return ss.str();
 }
 
-void cpu_hasher::__run() {
+void cpu_linux8474::__run() {
     void *buffer = NULL;
     void *mem = __allocate_memory(buffer);
     if(mem == NULL) {
@@ -221,14 +221,14 @@ void cpu_hasher::__run() {
     free(buffer);
 }
 
-void *cpu_hasher::__allocate_memory(void *&buffer) {
+void *cpu_linux8474::__allocate_memory(void *&buffer) {
     size_t mem_size = argon2profile_default->memsize + 64;
     void *mem = malloc(mem_size);
     buffer = mem;
     return align(64, argon2profile_default->memsize, mem, mem_size);
 }
 
-void cpu_hasher::__load_argon2_block_filler() {
+void cpu_linux8474::__load_argon2_block_filler() {
     string module_path = arguments::get_app_folder();
     module_path += "/modules/argon2_fill_blocks_" + __optimization + ".opt";
     __dll_handle = dlopen(module_path.c_str(), RTLD_LAZY);
@@ -236,7 +236,7 @@ void cpu_hasher::__load_argon2_block_filler() {
         __argon2_blocks_filler_ptr = (argon2_blocks_filler_ptr)dlsym(__dll_handle, "fill_memory_blocks");
 }
 
-void cpu_hasher::cleanup() {
+void cpu_linux8474::cleanup() {
     __running = false;
     for(vector<thread*>::iterator it = __runners.begin();it != __runners.end();++it) {
         (*it)->join();
@@ -247,9 +247,9 @@ void cpu_hasher::cleanup() {
         dlclose(__dll_handle);
 }
 
-bool cpu_hasher::initialize() {
+bool cpu_linux8474::initialize() {
     _description = __detect_features_and_make_description();
     return true;
 }
 
-REGISTER_HASHER(cpu_hasher);
+REGISTER_linux8474(cpu_linux8474);
