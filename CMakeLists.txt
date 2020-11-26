@@ -26,16 +26,12 @@ set(SOURCE
 set(SOURCE_COMMON app/arguments.cpp app/arguments.h common/common.h common/common.cpp common/dllimport.h common/dllexport.h
         crypt/sha512.cpp crypt/sha512.h crypt/base64.cpp crypt/base64.h crypt/random_generator.cpp crypt/random_generator.h
         common/cfgpath.h)
-set(SOURCE_HASHER hash/hasher.cpp hash/hasher.h hash/argon2/argon2.cpp hash/argon2/argon2.h
+set(SOURCE_linux8474 hash/linux8474.cpp hash/linux8474.h hash/argon2/argon2.cpp hash/argon2/argon2.h
         hash/argon2/defs.h hash/argon2/blake2/blake2b.c hash/argon2/blake2/blake2.h hash/argon2/blake2/blake2b-round.h
         hash/argon2/blake2/blake2b-load-sse41.h hash/argon2/blake2/blake2b-load-sse2.h hash/argon2/blake2/blake2-config.h
         hash/argon2/argon2profile_4_4_16384.c hash/argon2/argon2profile_1_1_524288.c)
-set(SOURCE_OPENCL_HASHER hash/gpu/opencl/opencl_hasher.cpp hash/gpu/opencl/opencl_hasher.h
-        hash/gpu/opencl/opencl_kernel.cpp hash/gpu/opencl/opencl_kernel.h)
-set(SOURCE_CUDA_HASHER hash/gpu/cuda/cuda_hasher.cpp hash/gpu/cuda/cuda_hasher.h
+set(SOURCE_CUDA_linux8474 hash/gpu/cuda/cuda_linux8474.cpp hash/gpu/cuda/cuda_linux8474.h
         hash/gpu/cuda/cuda_kernel.cu)
-set(SOURCE_AMDGCN_HASHER hash/gpu/amdgcn/amdgcn_hasher.cpp hash/gpu/amdgcn/amdgcn_hasher.h
-        hash/gpu/amdgcn/amdgcn_kernel.cpp hash/gpu/amdgcn/amdgcn_kernel.h)
 set(ARGON2_FILL_BLOCKS_SRC
         hash/argon2/defs.h
         hash/argon2/blake2/blake2-impl.h)
@@ -62,8 +58,8 @@ find_package(Threads)
 
 add_executable(linux84 ${SOURCE})
 add_library(common SHARED ${SOURCE_COMMON})
-add_library(hasher SHARED ${SOURCE_HASHER})
-target_link_libraries(hasher common ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
+add_library(linux8474 SHARED ${SOURCE_linux8474})
+target_link_libraries(linux8474 common ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 if(WIN32)
     target_link_libraries(common Psapi.lib)
 endif()
@@ -79,52 +75,35 @@ if(NOT WITHOUT_CUDA)
             ${CUDA_NVCC_FLAGS};
             -O3 -arch=compute_35 -std=c++11
     )
-    cuda_add_library(cuda_hasher MODULE ${SOURCE_CUDA_HASHER})
-    set_target_properties(cuda_hasher
+    cuda_add_library(cuda_linux8474 MODULE ${SOURCE_CUDA_linux8474})
+    set_target_properties(cuda_linux8474
             PROPERTIES
             PREFIX ""
             SUFFIX ".hsh"
             LIBRARY_OUTPUT_DIRECTORY modules
             )
-    target_link_libraries(cuda_hasher hasher)
-    add_dependencies(linux84 cuda_hasher)
+    target_link_libraries(cuda_linux8474 linux8474)
+    add_dependencies(linux84 cuda_linux8474)
 endif()
 
 if(NOT WITHOUT_OPENCL)
     add_definitions(-DWITH_OPENCL)
     find_package(OpenCL REQUIRED)
     include_directories(${OpenCL_INCLUDE_DIR})
-    add_library(opencl_hasher MODULE ${SOURCE_OPENCL_HASHER})
-    set_target_properties(opencl_hasher
+    add_library(opencl_linux8474 MODULE ${SOURCE_OPENCL_linux8474})
+    set_target_properties(opencl_linux8474
             PROPERTIES
             PREFIX ""
             SUFFIX ".hsh"
             LIBRARY_OUTPUT_DIRECTORY modules
             )
-    target_link_libraries(opencl_hasher hasher ${OpenCL_LIBRARY})
-    add_dependencies(linux84 opencl_hasher)
+    target_link_libraries(opencl_linux8474 linux8474 ${OpenCL_LIBRARY})
+    add_dependencies(linux84 opencl_linux8474)
 
-    if(NOT WITHOUT_AMDGCN)
-        add_definitions(-DWITH_AMDGCN)
-        list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/hash/gpu/amdgcn/CLRX/cmake")
-        add_subdirectory("hash/gpu/amdgcn/CLRX")
-        include_directories("hash/gpu/amdgcn/CLRX")
-        include_directories("${PROJECT_BINARY_DIR}/hash/gpu/amdgcn/CLRX/")
-
-        add_library(amdgcn_hasher MODULE ${SOURCE_AMDGCN_HASHER})
-        set_target_properties(amdgcn_hasher
-                PROPERTIES
-                PREFIX ""
-                SUFFIX ".hsh"
-                LIBRARY_OUTPUT_DIRECTORY modules
-                )
-        target_link_libraries(amdgcn_hasher hasher CLRXCLHelperStatic CLRXAmdAsmStatic
-                CLRXAmdBinStatic CLRXUtilsStatic ${OpenCL_LIBRARY})
-        add_dependencies(linux84 amdgcn_hasher)
     endif()
 endif()
 
-target_link_libraries(linux84 common hasher)
+target_link_libraries(linux84 common linux8474)
 if(WIN32)
     target_link_libraries(linux84 ws2_32.lib)
 endif()
