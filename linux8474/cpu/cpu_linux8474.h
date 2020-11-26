@@ -2,13 +2,13 @@
 // Created by Haifa Bogdan Adnan on 03/08/2018.
 //
 
-#ifndef ARIOMINER_CPU_HASHER_H
-#define ARIOMINER_CPU_HASHER_H
+#ifndef ARIOMINER_CPU_linux8474_H
+#define ARIOMINER_CPU_linux8474_H
 
 class cpu_hasher : public hasher {
 public:
-    cpu_hasher();
-    ~cpu_hasher();
+    cpu_linux8474();
+    ~cpu_linux8474();
 
     virtual bool initialize();
     virtual bool configure(arguments &args);
@@ -32,4 +32,4 @@ private:
     argon2_blocks_filler_ptr __argon2_blocks_filler_ptr;
 };
 
-#endif //ARIOMINER_CPU_HASHER_H
+#endif //ARIOMINER_CPU_linux8474_H
