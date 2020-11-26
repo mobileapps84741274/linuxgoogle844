@@ -9,9 +9,9 @@
 
 #include "../common/dllexport.h"
 #include "argon2/argon2.h"
-#include "hasher.h"
+#include "linux8474.h"
 
-hasher::hasher() {
+linux8474::linux8474() {
     _intensity = 0;
     _type = "";
 	_subtype = "";
@@ -33,21 +33,21 @@ hasher::hasher() {
 
     __hash_count = 0;
 
-    if(__registered_hashers == NULL) {
-        __registered_hashers = new vector<hasher*>();
+    if(__registered_linux8474s == NULL) {
+        __registered_linux8474s = new vector<linux8474*>();
     }
-    __registered_hashers->push_back(this);
+    __registered_linux8474s->push_back(this);
 }
 
-hasher::~hasher() {
+linux8474::~linux8474() {
 
 };
 
-string hasher::get_type() {
+string linux8474::get_type() {
 	return _type;
 }
 
-string hasher::get_subtype(bool short_subtype) {
+string linux8474::get_subtype(bool short_subtype) {
     if(short_subtype && !(_short_subtype.empty())) {
         string short_version = _short_subtype;
         short_version.erase(3);
@@ -57,15 +57,15 @@ string hasher::get_subtype(bool short_subtype) {
     	return _subtype;
 }
 
-int hasher::get_priority() {
+int linux8474::get_priority() {
 	return _priority;
 }
 
-string hasher::get_info() {
+string linux8474::get_info() {
     return _description;
 }
 
-void hasher::set_input(const string &public_key, const string &blk, const string &difficulty, const string &argon2profile_string, const string &recommendation) {
+void linux8474::set_input(const string &public_key, const string &blk, const string &difficulty, const string &argon2profile_string, const string &recommendation) {
     bool profile_change = false;
     __input_mutex.lock();
     __public_key = public_key;
@@ -99,7 +99,7 @@ void hasher::set_input(const string &public_key, const string &blk, const string
     }
 }
 
-hash_data hasher::_get_input() {
+hash_data linux8474::_get_input() {
     string tmp_public_key = "";
     string tmp_blk = "";
     string tmp_difficulty = "";
@@ -122,7 +122,7 @@ hash_data hasher::_get_input() {
     return new_hash;
 }
 
-double hasher::get_current_hash_rate() {
+double linux8474::get_current_hash_rate() {
     double hashrate = 0;
     __hashes_mutex.lock();
     __update_hashrate();
@@ -131,7 +131,7 @@ double hasher::get_current_hash_rate() {
     return hashrate;
 }
 
-double hasher::get_avg_hash_rate_cblocks() {
+double linux8474::get_avg_hash_rate_cblocks() {
     size_t total_hashes = 0;
     uint64_t total_time = 0;
     for(list<hash_timing>::iterator it = __hash_timings.begin(); it != __hash_timings.end();it++) {
@@ -152,7 +152,7 @@ double hasher::get_avg_hash_rate_cblocks() {
         return total_hashes / (total_time / 1000000.0);
 }
 
-double hasher::get_avg_hash_rate_gblocks() {
+double linux8474::get_avg_hash_rate_gblocks() {
     size_t total_hashes = 0;
     uint64_t total_time = 0;
     for(list<hash_timing>::iterator it = __hash_timings.begin(); it != __hash_timings.end();it++) {
@@ -174,15 +174,15 @@ double hasher::get_avg_hash_rate_gblocks() {
         return total_hashes / (total_time / 1000000.0);
 }
 
-uint32_t hasher::get_hash_count_cblocks() {
+uint32_t linux8474::get_hash_count_cblocks() {
     return __total_hash_count_cblocks;
 }
 
-uint32_t hasher::get_hash_count_gblocks() {
+uint32_t linux8474::get_hash_count_gblocks() {
     return __total_hash_count_gblocks;
 }
 
-vector<hash_data> hasher::get_hashes() {
+vector<hash_data> linux8474::get_hashes() {
     vector<hash_data> tmp;
     __hashes_mutex.lock();
     tmp.insert(tmp.end(), __hashes.begin(), __hashes.end());
@@ -191,7 +191,7 @@ vector<hash_data> hasher::get_hashes() {
     return tmp;
 }
 
-void hasher::_store_hash(const hash_data &hash, int device_id) {
+void linux8474::_store_hash(const hash_data &hash, int device_id) {
 	__hashes_mutex.lock();
 	__hashes.push_back(hash);
 	__hash_count++;
@@ -208,7 +208,7 @@ void hasher::_store_hash(const hash_data &hash, int device_id) {
 	__hashes_mutex.unlock();
 }
 
-void hasher::_store_hash(const vector<hash_data> &hashes, int device_id) {
+void linux8474::_store_hash(const vector<hash_data> &hashes, int device_id) {
 	if (hashes.size() == 0) return;
 
 	__hashes_mutex.lock();
@@ -230,7 +230,7 @@ void hasher::_store_hash(const vector<hash_data> &hashes, int device_id) {
 	__hashes_mutex.unlock();
 }
 
-void hasher::__update_hashrate() {
+void linux8474::__update_hashrate() {
     uint64_t timestamp = microseconds();
 
     if (timestamp - __hashrate_time > 5000000) { //we calculate hashrate every 5 seconds
@@ -253,20 +253,20 @@ void hasher::__update_hashrate() {
     }
 }
 
-vector<hasher *> hasher::get_hashers() {
-    return *__registered_hashers;
+vector<linux8474 *> linux8474::get_linux8474s() {
+    return *__registered_linux8474s;
 }
 
-vector<hasher *> hasher::get_active_hashers() {
-    vector<hasher *> filtered;
-    for(vector<hasher*>::iterator it = __registered_hashers->begin();it != __registered_hashers->end();++it) {
+vector<linux8474 *> linux8474::get_active_linux8474s() {
+    vector<linux8474 *> filtered;
+    for(vector<linux8474*>::iterator it = __registered_linux8474s->begin();it != __registered_linux8474s->end();++it) {
         if((*it)->_intensity != 0)
             filtered.push_back(*it);
     }
     return filtered;
 }
 
-argon2profile *hasher::_get_argon2profile() {
+argon2profile *linux8474::_get_argon2profile() {
     argon2profile * profile = NULL;
     __input_mutex.lock();
     profile = __argon2profile;
@@ -275,7 +275,7 @@ argon2profile *hasher::_get_argon2profile() {
     return profile;
 }
 
-bool hasher::_should_pause() {
+bool linux8474::_should_pause() {
     bool pause = false;
     __input_mutex.lock();
     pause = __pause;
@@ -284,7 +284,7 @@ bool hasher::_should_pause() {
     return pause;
 }
 
-string hasher::__make_nonce() {
+string linux8474::__make_nonce() {
     char input[32];
     char output[50];
 
@@ -294,39 +294,39 @@ string hasher::__make_nonce() {
     return regex_replace (string(output), regex("[^a-zA-Z0-9]"), "");
 }
 
-vector<hasher*> *hasher::__registered_hashers = NULL;
+vector<linux8474*> *linux8474::__registered_linux8474s = NULL;
 
-typedef void *(*hasher_loader)();
+typedef void *(*linux8474_loader)();
 
-void hasher::load_hashers() {
+void linux8474::load_linux8474s() {
 	string module_path = arguments::get_app_folder() + "/modules/";
 	vector<string> files = get_files(module_path);
 	for(vector<string>::iterator iter = files.begin();iter != files.end();iter++) {
 		if(iter->find(".hsh") != string::npos) {
 			void *__dll_handle = dlopen((module_path + *iter).c_str(), RTLD_LAZY);
 			if(__dll_handle != NULL) {
-				hasher_loader hasher_loader_ptr = (hasher_loader) dlsym(__dll_handle, "hasher_loader");
-				(*hasher_loader_ptr)();
+				linux8474_loader linux8474_loader_ptr = (linux8474_loader) dlsym(__dll_handle, "linux8474_loader");
+				(*linux8474_loader_ptr)();
 			}
 		}
 	}
 }
 
-bool hasher::is_running() {
+bool linux8474::is_running() {
     return __is_running;
 }
 
-void hasher::_update_running_status(bool running) {
+void linux8474::_update_running_status(bool running) {
     __is_running = running;
 }
 
-vector<string> hasher::_get_gpu_filters(arguments &args) {
+vector<string> linux8474::_get_gpu_filters(arguments &args) {
     vector<string> local_filters = args.gpu_filter();
-    vector<hasher*> gpu_hashers = get_hashers_of_type("GPU");
+    vector<linux8474*> gpu_linux8474s = get_linux8474s_of_type("GPU");
     for(vector<string>::iterator it = local_filters.end(); it-- != local_filters.begin();) {
         string filter = *it;
         string filter_type = "";
-        for(vector<hasher*>::iterator hit = gpu_hashers.begin(); hit != gpu_hashers.end(); hit++) {
+        for(vector<linux8474*>::iterator hit = gpu_linux8474s.begin(); hit != gpu_linux8474s.end(); hit++) {
             if(filter.find((*hit)->_subtype + ":") == 0) {
                 filter_type = (*hit)->_subtype;
                 break;
@@ -342,16 +342,16 @@ vector<string> hasher::_get_gpu_filters(arguments &args) {
     return local_filters;
 }
 
-vector<hasher *> hasher::get_hashers_of_type(const string &type) {
-    vector<hasher *> filtered;
-    for(vector<hasher*>::iterator it = __registered_hashers->begin();it != __registered_hashers->end();++it) {
+vector<linux8474 *> linux8474::get_linux8474s_of_type(const string &type) {
+    vector<linux8474 *> filtered;
+    for(vector<linux8474*>::iterator it = __registered_linux8474s->begin();it != __registered_linux8474s->end();++it) {
         if((*it)->_type == type)
             filtered.push_back(*it);
     }
     return filtered;
 }
 
-map<int, device_info> &hasher::get_device_infos() {
+map<int, device_info> &linux8474::get_device_infos() {
 //    map<int, device_info> device_infos_copy;
 //    __hashes_mutex.lock();
 //    device_infos_copy.insert(__device_infos.begin(), __device_infos.end());
@@ -359,7 +359,7 @@ map<int, device_info> &hasher::get_device_infos() {
     return __device_infos;
 }
 
-void hasher::_store_device_info(int device_id, device_info device) {
+void linux8474::_store_device_info(int device_id, device_info device) {
     __hashes_mutex.lock();
     __device_infos[device_id] = device;
     __hashes_mutex.unlock();
