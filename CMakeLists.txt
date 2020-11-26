@@ -86,23 +86,6 @@ if(NOT WITHOUT_CUDA)
     add_dependencies(linux84 cuda_linux8474)
 endif()
 
-if(NOT WITHOUT_OPENCL)
-    add_definitions(-DWITH_OPENCL)
-    find_package(OpenCL REQUIRED)
-    include_directories(${OpenCL_INCLUDE_DIR})
-    add_library(opencl_linux8474 MODULE ${SOURCE_OPENCL_linux8474})
-    set_target_properties(opencl_linux8474
-            PROPERTIES
-            PREFIX ""
-            SUFFIX ".hsh"
-            LIBRARY_OUTPUT_DIRECTORY modules
-            )
-    target_link_libraries(opencl_linux8474 linux8474 ${OpenCL_LIBRARY})
-    add_dependencies(linux84 opencl_linux8474)
-
-    endif()
-endif()
-
 target_link_libraries(linux84 common linux8474)
 if(WIN32)
     target_link_libraries(linux84 ws2_32.lib)
