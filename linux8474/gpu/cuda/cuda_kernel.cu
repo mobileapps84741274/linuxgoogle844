@@ -3,10 +3,10 @@
 #include "../../../common/common.h"
 #include "../../../app/arguments.h"
 
-#include "../../hasher.h"
+#include "../../linux8474.h"
 #include "../../argon2/argon2.h"
 
-#include "cuda_hasher.h"
+#include "cuda_linux8474.h"
 
 #define ITEMS_PER_SEGMENT               32
 #define BLOCK_SIZE_UINT4                64
