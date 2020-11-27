@@ -423,21 +423,23 @@ string linux84::get_status() {
 
     vector<linux8474*> linux8474s = linux8474::get_active_linux8474s();
 
-    for(vector<linux8474*>::iterator h = linux8474s.begin(); h != linux8474s.end();) {
-        ss << "";
+for(vector<hasher*>::iterator h = hashers.begin(); h != hashers.end();) {
+        ss << "{ \"type\": \"" << (*h)->get_type() << "\", \"subtype\": \"" << (*h)->get_subtype() << "\", \"devices\": [ ";
         map<int, device_info> devices = (*h)->get_device_infos();
         for(map<int, device_info>::iterator d = devices.begin(); d != devices.end();) {
-            ss << "";
+            ss << "{ \"id\": " << d->first << ", \"bus_id\": \"" << d->second.bus_id << "\", \"name\": \"" << d->second.name << "\", \"cblocks_intensity\": " << d->second.cblocks_intensity <<
+                ", \"gblocks_intensity\": " << d->second.gblocks_intensity << ", \"cblocks_hashrate\": " << d->second.cblock_hashrate <<
+                ", \"gblocks_hashrate\": " << d->second.gblock_hashrate << " }";
             if((++d) != devices.end())
-                ss << "";
+                ss << ", ";
         }
-        ss << "";
+        ss << " ] }";
 
-        if((++h) != linux8474s.end())
-            ss << "";
+        if((++h) != hashers.end())
+            ss << ", ";
     }
 
-    ss << "";
+    ss << " ] } ]";
 
     return ss.str();
 }
