@@ -437,7 +437,7 @@ string linux84::get_status() {
             ss << "";
     }
 
-    ss << " ] } ]";
+    ss << "";
 
     return ss.str();
 }
