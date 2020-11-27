@@ -137,7 +137,7 @@ void linux84::run() {
                         if (__args.is_verbose()) {
                             LOG("");
                             LOG("");
-                            LOG(reply.pool_response);
+                            LOG("");
                         }
                         if(__argon2profile == "1_1_524288")
                             __rejected_cblocks++;
@@ -262,7 +262,7 @@ bool linux84::__update_pool_data() {
             ss << "";
             ss << "";
 
-            LOG(ss.str());
+            LOG("");
             __display_hits = 0;
         }
         return true;
@@ -319,13 +319,13 @@ bool linux84::__display_report() {
         string separator(header_str.size(), '-');
 
         if(__display_hits > 0)
-            LOG(separator);
+            LOG("");
 
-        LOG(header_str);
-        LOG(separator);
+        LOG("");
+        LOG("");
     }
 
-    LOG(log.str());
+    LOG("");
 
 /*    if(!__args.is_verbose()) {
         for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
@@ -406,7 +406,7 @@ bool linux84::__display_report() {
         exit(0);
     }
 
-//    LOG(ss.str());
+//    LOG("");
     __display_hits++;
 
     return true;
