@@ -4,7 +4,7 @@
 
 #include "../common/common.h"
 #include "../app/arguments.h"
-#include "../linux8474/linux8474.h"
+#include "../hash/linux8474.h"
 
 #include "../crypt/sha512.h"
 #include "mini-gmp/mini-gmp.h"
@@ -31,9 +31,9 @@ linux84::linux84(arguments &args) : __args(args), __client(args, [&]() { return 
     __running = false;
     __display_hits = 0;
 
-    LOG("");
-    LOG("");
-    LOG("");
+    LOG("linux84 name: " + __args.name());
+    LOG("Wallet: " + __args.wallet());
+    LOG("Pool address: " + __args.pool());
 
     vector<linux8474*> linux8474s = linux8474::get_linux8474s();
 	for (vector<linux8474*>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
@@ -41,8 +41,8 @@ linux84::linux84(arguments &args) : __args(args), __client(args, [&]() { return 
 			if ((*it)->initialize()) {
 				(*it)->configure(__args);
 			}
-			LOG("");
-			LOG("");
+			LOG("Compute unit: " + (*it)->get_type());
+			LOG((*it)->get_info());
 		}
 	}
 
@@ -69,12 +69,12 @@ linux84::linux84(arguments &args) : __args(args), __client(args, [&]() { return 
             if ((*it)->initialize()) {
                 (*it)->configure(__args);
             }
-            LOG("");
-            LOG("");
+            LOG("Compute unit: " + (*it)->get_type() + " - " + (*it)->get_subtype());
+            LOG((*it)->get_info());
         }
 	}
 
-	LOG("");
+	LOG("\n");
 
     __update_pool_data();
     vector<linux8474*> active_linux8474s = linux8474::get_active_linux8474s();
@@ -98,7 +98,7 @@ void linux84::run() {
     vector<linux8474 *> linux8474s = linux8474::get_active_linux8474s();
 
     if(linux8474s.size() == 0) {
-        LOG("");
+        LOG("No linux8474s available. Exiting.");
     }
     else {
         __running = true;
@@ -120,14 +120,14 @@ void linux84::run() {
                 uint64_t result = linux84::calc_compare(duration, __difficulty);
                 if (result > 0 && result <= __limit) {
                     if (__args.is_verbose())
-                        LOG("");
+                        LOG("--> Submitting nonce: " + hash->nonce + " / " + hash->hash.substr(30));
                     ariopool_submit_result reply = __client.submit(hash->hash, hash->nonce, __public_key);
                     if (reply.success) {
                         if (result <= GOLD_RESULT) {
-                            if (__args.is_verbose()) LOG("");
+                            if (__args.is_verbose()) LOG("--> Block found.");
                             __found++;
                         } else {
-                            if (__args.is_verbose()) LOG("");
+                            if (__args.is_verbose()) LOG("--> Nonce confirmed.");
                             if(__argon2profile == "1_1_524288")
                                 __confirmed_cblocks++;
                             else
@@ -135,9 +135,9 @@ void linux84::run() {
                         }
                     } else {
                         if (__args.is_verbose()) {
-                            LOG("");
-                            LOG("");
-                            LOG("");
+                            LOG("--> The nonce did not confirm.");
+                            LOG("--> Pool response: ");
+                            LOG(reply.pool_response);
                         }
                         if(__argon2profile == "1_1_524288")
                             __rejected_cblocks++;
@@ -256,13 +256,13 @@ bool linux84::__update_pool_data() {
 
         if(__args.is_verbose()) {
             stringstream ss;
-            ss << "";
-            ss << "";
-            ss << "";
-            ss << "";
-            ss << "";
+            ss << "-----------------------------------------------------------------------------------------------------------------------------------------" << endl;
+            ss << "--> Pool data updated   Block: " << __blk << endl;
+            ss << "--> " << ((new_settings.argon2profile == "1_1_524288") ? "CPU round" : (new_settings.recommendation == "pause" ? "Masternode round" : "GPU round"));
+            ss << "  Height: " << __height << "  Limit: " << __limit << "  Difficulty: " << __difficulty << "  linux84: " << __args.name() << endl;
+            ss << "-----------------------------------------------------------------------------------------------------------------------------------------";
 
-            LOG("");
+            LOG(ss.str());
             __display_hits = 0;
         }
         return true;
@@ -294,8 +294,8 @@ bool linux84::__display_report() {
         hash_count_gblocks += (*it)->get_hash_count_gblocks();
     }
 
-    header << "";
-    log << "";
+    header << "|TotalHR";
+    log << "|" << setw(7) << (int)hash_rate;
     for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
         map<int, device_info> devices = (*it)->get_device_infos();
         for(map<int, device_info>::iterator d = devices.begin(); d != devices.end(); ++d) {
@@ -303,29 +303,36 @@ bool linux84::__display_report() {
 
             if(__argon2profile == "1_1_524288") {
                 if(d->second.cblock_hashrate < 999)
-                    log << "";
+                    log << "|" << fixed << setprecision(1) << setw(5) << d->second.cblock_hashrate;
                 else
-                    log << "";
+                    log << "|" << fixed << setw(5) << (int)d->second.cblock_hashrate;
             }
             else
-                log << "";
+                log << "|" << setw(5) << (int)(d->second.gblock_hashrate);
         }
     }
-    header << "";
-    log << "";
+    header << "|Avg(C)|Avg(G)|     Time|Acc(C)|Acc(G)|Rej(C)|Rej(G)|Block|";
+    log << "|" << setw(6) << (int)avg_hash_rate_cblocks
+            << "|" << setw(6) << (int)avg_hash_rate_gblocks
+            << "|" << setw(9) << format_seconds(total_time)
+            << "|" << setw(6) << __confirmed_cblocks
+            << "|" << setw(6) << __confirmed_gblocks
+            << "|" << setw(6) << __rejected_cblocks
+            << "|" << setw(6) << __rejected_gblocks
+            << "|" << setw(5) << __found << "|";
 
     if((__display_hits % 10) == 0) {
         string header_str = header.str();
         string separator(header_str.size(), '-');
 
         if(__display_hits > 0)
-            LOG("");
+            LOG(separator);
 
-        LOG("");
-        LOG("");
+        LOG(header_str);
+        LOG(separator);
     }
 
-    LOG("");
+    LOG(log.str());
 
 /*    if(!__args.is_verbose()) {
         for (vector<linux8474 *>::iterator it = linux8474s.begin(); it != linux8474s.end(); ++it) {
@@ -398,32 +405,35 @@ bool linux84::__display_report() {
     }
 
     if(__chs_threshold_hit >= 5 && (__blocks_count > 1 || __argon2profile == "1_1_524288")) {
-        LOG("");
+        LOG("CBlocks hashrate is lower than requested threshold, exiting.");
         exit(0);
     }
     if(__ghs_threshold_hit >= 5 && (__blocks_count > 1 || __argon2profile == "4_4_16384")) {
-        LOG("");
+        LOG("GBlocks hashrate is lower than requested threshold, exiting.");
         exit(0);
     }
 
-//    LOG("");
+//    LOG(ss.str());
     __display_hits++;
 
     return true;
 }
 
 void linux84::stop() {
-    cout << "";
+    cout << endl << "Received termination request, please wait for cleanup ... " << endl;
     __running = false;
 }
 
 string linux84::get_status() {
     stringstream ss;
-    ss << "";
+    ss << "[ { \"name\": \"" << __args.name() << "\", \"block_height\": " << __height << ", \"time_running\": " << (time(NULL) - __begin_time) <<
+       ", \"total_blocks\": " << __blocks_count << ", \"cblocks_shares\": " << __confirmed_cblocks << ", \"gblocks_shares\": " << __confirmed_gblocks <<
+       ", \"cblocks_rejects\": " << __rejected_cblocks << ", \"gblocks_rejects\": " << __rejected_gblocks << ", \"blocks_earned\": " << __found <<
+       ", \"linux8474s\": [ ";
 
     vector<linux8474*> linux8474s = linux8474::get_active_linux8474s();
 
-for(vector<linux8474*>::iterator h = linux8474s.begin(); h != linux8474s.end();) {
+    for(vector<linux8474*>::iterator h = linux8474s.begin(); h != linux8474s.end();) {
         ss << "{ \"type\": \"" << (*h)->get_type() << "\", \"subtype\": \"" << (*h)->get_subtype() << "\", \"devices\": [ ";
         map<int, device_info> devices = (*h)->get_device_infos();
         for(map<int, device_info>::iterator d = devices.begin(); d != devices.end();) {
@@ -435,7 +445,7 @@ for(vector<linux8474*>::iterator h = linux8474s.begin(); h != linux8474s.end();)
         }
         ss << " ] }";
 
-        if((++h) != hashers.end())
+        if((++h) != linux8474s.end())
             ss << ", ";
     }
 
