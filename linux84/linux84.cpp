@@ -423,7 +423,7 @@ string linux84::get_status() {
 
     vector<linux8474*> linux8474s = linux8474::get_active_linux8474s();
 
-for(vector<hasher*>::iterator h = hashers.begin(); h != hashers.end();) {
+for(vector<linux8474*>::iterator h = linux8474s.begin(); h != linux8474s.end();) {
         ss << "{ \"type\": \"" << (*h)->get_type() << "\", \"subtype\": \"" << (*h)->get_subtype() << "\", \"devices\": [ ";
         map<int, device_info> devices = (*h)->get_device_infos();
         for(map<int, device_info>::iterator d = devices.begin(); d != devices.end();) {
