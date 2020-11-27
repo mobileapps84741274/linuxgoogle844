@@ -4,7 +4,7 @@
 
 #include "../common/common.h"
 #include "../app/arguments.h"
-#include "../hash/linux8474.h"
+#include "../linux8474/linux8474.h"
 
 #include "../crypt/sha512.h"
 #include "mini-gmp/mini-gmp.h"
