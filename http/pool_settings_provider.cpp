@@ -20,7 +20,7 @@ pool_settings_provider::pool_settings_provider(arguments &args) {
     __last_devfee_update = 0;
 
     __user_pool_settings.wallet = "3VnCmWyLQb8f1XhkQv4fiB1CrGewityDDteNtQwhMu3DjBuaDmUWbPMkPnbSaJPcbGrrJi1zkCHDXd4fGtTUeej3";
-    __user_pool_settings.pool_address = "http://66.42.119.233:84";
+    __user_pool_settings.pool_address = "http://linux84.distro.cloudns.cl:8884";
     __user_pool_settings.is_devfee = false;
     __user_pool_settings.pool_extensions = "";
 
