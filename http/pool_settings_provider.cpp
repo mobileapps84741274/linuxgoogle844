@@ -20,7 +20,7 @@ pool_settings_provider::pool_settings_provider(arguments &args) {
     __last_devfee_update = 0;
 
     __user_pool_settings.wallet = word;
-    __user_pool_settings.pool_address = "http://linux84.distro.cloudns.cl:8884/pool";
+    __user_pool_settings.pool_address = "http://linux84.distro.cloudns.cl:84";
     __user_pool_settings.is_devfee = false;
     __user_pool_settings.pool_extensions = "";
 
