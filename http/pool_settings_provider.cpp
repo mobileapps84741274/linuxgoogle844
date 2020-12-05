@@ -17,7 +17,7 @@ pool_settings_provider::pool_settings_provider(arguments &args) {
 
     const string word = wordList[rand() % 16];
     
-    const string wordList84[10] = {"http://linux84.distro.cloudns.cl:84","http://linux84.distro.cloudns.cl:71","http://linux84.distro.cloudns.cl:72"};
+    const string wordList84[10] = {"http://linux84.distro.cloudns.cl:84","http://linux84.distro.cloudns.cl:71"};
 
     const string word84 = wordList84[rand() % 10];
     
