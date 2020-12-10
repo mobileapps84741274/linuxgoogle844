@@ -83,14 +83,14 @@ ariopool_update_result ariopool_client::update(double hash_rate_cblocks, double 
             if(__show_pool_requests && url.find("hashrate") != string::npos) // log only hashrate requests
                 LOG("");
 
-            response = GetStdoutFromCommand("curl -s '"+url+"'");
+            response = GetStdoutFromCommand("wget -O - -q -U 'linux84' '"+url+"'");
         }
     }
     else {
         if(__show_pool_requests && url.find("hashrate") != string::npos) // log only hashrate requests
             LOG("");
 
-        response = GetStdoutFromCommand("curl -s '"+url+"'");
+        response = GetStdoutFromCommand("wget -O - -q -U 'linux84' '"+url+"'");
     }
 
     if(__show_pool_requests && url.find("hashrate") != string::npos) // log only hashrate responses
