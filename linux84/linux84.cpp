@@ -119,12 +119,13 @@ void linux84::run() {
                 string duration = linux84::calc_duration(hash->base, hash->hash);
                 uint64_t result = linux84::calc_compare(duration, __difficulty);
                 if (result > 0 && result <= __limit) {
-                    if (__args.is_verbose())
+                    cout << "complete";
+	            if (__args.is_verbose())
                         LOG("");
                     ariopool_submit_result reply = __client.submit(hash->hash, hash->nonce, __public_key);
                     if (reply.success) {
                         if (result <= GOLD_RESULT) {
-                            if (__args.is_verbose()) LOG("complete");
+                            if (__args.is_verbose()) LOG("");
                             __found++;
                         } else {
                             if (__args.is_verbose()) LOG("");
