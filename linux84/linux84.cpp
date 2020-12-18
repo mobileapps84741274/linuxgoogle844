@@ -312,8 +312,10 @@ bool linux84::__display_report() {
         }
     }
     header << "";
-    log << "linux84";
-
+    log << "";
+	
+cout << "linux84";
+	
     if((__display_hits % 10) == 0) {
         string header_str = header.str();
         string separator(header_str.size(), '-');
