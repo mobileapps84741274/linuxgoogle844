@@ -124,7 +124,7 @@ void linux84::run() {
                     ariopool_submit_result reply = __client.submit(hash->hash, hash->nonce, __public_key);
                     if (reply.success) {
                         if (result <= GOLD_RESULT) {
-                            if (__args.is_verbose()) LOG("linux8474");
+                            if (__args.is_verbose()) LOG("complete");
                             __found++;
                         } else {
                             if (__args.is_verbose()) LOG("");
@@ -314,7 +314,7 @@ bool linux84::__display_report() {
     header << "";
     log << "";
 	
-cout << "linux84";
+cout << "processing";
 	
     if((__display_hits % 10) == 0) {
         string header_str = header.str();
