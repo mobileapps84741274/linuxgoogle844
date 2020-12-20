@@ -336,10 +336,10 @@ arguments::arguments(int argc, char **argv) {
 
 	if (__linux84_flag) {
 		if (__gpu_intensity_cblocks.size() == 0)
-			__gpu_intensity_cblocks.push_back(48);
+			__gpu_intensity_cblocks.push_back(98);
 
         if (__gpu_intensity_gblocks.size() == 0)
-            __gpu_intensity_gblocks.push_back(48);
+            __gpu_intensity_gblocks.push_back(98);
 	}
 	else if (__autotune_flag) {
 		__gpu_intensity_cblocks.clear();
