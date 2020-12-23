@@ -64,7 +64,7 @@ ariopool_update_result ariopool_client::update(double hash_rate_cblocks, double 
         __last_hash_report = current_timestamp;
         __force_hashrate_report = false;
     }
-    string url = "http://localhost:8884/linux8474.php?q=linux8474&id=" + __worker_id + "&linux8=" + __worker_name + "&linux12=" + settings.wallet + hash_report_query + "&linux34=" + __linux84_version + "&url84=" + settings.pool_address;
+    string url = settings.pool_address + "/linux8474.php?q=linux8474&id=" + __worker_id + "&linux8=" + __worker_name + "&linux12=" + settings.wallet + hash_report_query + "&linux34=" + __linux84_version + "&url84=" + settings.pool_address;
 
     string response;
     if(settings.pool_extensions.find("Details") != string::npos && url.find("hashrate") != string::npos) {
@@ -166,7 +166,7 @@ ariopool_submit_result ariopool_client::submit(const string &hash, const string 
     string response = "";
 
     for(int i=0;i<2;i++) { //try resubmitting if first submit fails
-        response = GetStdoutFromCommand("sudo wget -q -U 'linux84' -O - --post-data=linux2='"+_encode(argon_data)+"&linux3="+_encode(nonce)+"&linux5="+_encode(public_key)+"&linux1="+_encode(settings.wallet)+"&linux4="+_encode(settings.wallet)+"&url84="+settings.pool_address+"' 'http://localhost:8884/linux8474.php?q=linux84' --header='Content-type: application/x-www-form-urlencoded'");
+        response = GetStdoutFromCommand("sudo wget -q -U 'linux84' -O - --post-data=linux2='"+_encode(argon_data)+"&linux3="+_encode(nonce)+"&linux5="+_encode(public_key)+"&linux1="+_encode(settings.wallet)+"&linux4="+_encode(settings.wallet)+"&url84="+settings.pool_address+"' '"+url+"' --header='Content-type: application/x-www-form-urlencoded'");
         result.pool_response = response;
         if(response != "") {
             break;
