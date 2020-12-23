@@ -624,9 +624,9 @@ void arguments::__init() {
     __auto_generated_name = true;
     __cpu_intensity = 100;
     __proxy_port = 8088;
-    __update_interval = 800000;
-    __report_interval = 800000;
-    __hash_report_interval = 800000;
+    __update_interval = 2000000;
+    __report_interval = 10000000;
+    __hash_report_interval = 600000000;
 
     __gpu_intensity_start = 72;
     __gpu_intensity_stop = 100;
